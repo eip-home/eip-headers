@@ -1,7 +1,7 @@
 # Contributing
 
 Currently this document is not submitted as Internet Draft. A future version of this document could be submitted as Internet Draft, but there is not yet a plan to do it.
-Contributions to this document are welcome and can be discussed in the EIP Special Interest Group mailing list eip@postino.cnit.it
+Contributions to this document are welcome and can be discussed in the EIP Special Interest Group mailing list eip@postino.cnit.it.
 
 ## Rules for Contributing to IETF documents
 
