@@ -6,15 +6,15 @@ category: info
 docname: draft-eip-headers-definitions-latest
 ipr: trust200902
 area: AREA
-workgroup: WG Working Group
+workgroup: SIG on EIP
 keyword: Internet-Draft
 venue:
-  group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: EIP
+  type: SIG
+  mail: eip@postino.cnit.it
+  arch: http://postino.cnit.it/cgi-bin/mailman/private/eip/
+  github: eip-home/eip-headers
+  latest: https://eip-home.github.io/eip-headers/draft-eip-headers-definitions.html
 
 stand_alone: yes
 smart_quotes: no
@@ -23,7 +23,7 @@ pi: [toc, sortrefs, symrefs]
 author:
  -
     name: "Stefano Salsano"
-    organization: Your Organization Here
+    organization: Univ. of Rome Tor Vergata / CNIT
     email: "stefano.salsano@uniroma2.it"
 
 normative:
@@ -40,13 +40,14 @@ TODO Abstract
 
 # Introduction
 
-TODO Introduction
+Changed introduction
+
+## Subsection title
 
 
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
-
 
 # Security Considerations
 
