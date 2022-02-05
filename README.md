@@ -1,6 +1,10 @@
 # Extensible In-band Processing Headers Definitions
 
+<!-- 
 This is the working area for the individual Internet-Draft, "Extensible In-band Processing Headers Definitions".
+-->
+
+This is the working area for the document "Extensible In-band Processing Headers Definitions". Currently this document is not submitted as Internet Draft. A future version of this document could be submitted as Internet Draft, but there is not yet a plan to do it.
 
 * [Editor's Copy](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.html)
 
