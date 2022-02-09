@@ -44,6 +44,7 @@ The EIP headers could be carried in different ways inside the IPv6 Header. Likel
 
 # Work in progress definition of EIP Option for HBH EH
 
+~~~
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                                    | Option type   |Opt Data Len=xx|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -53,13 +54,16 @@ The EIP headers could be carried in different ways inside the IPv6 Header. Likel
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                         ......                                |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
+~~~
 
 Option type
+
+~~~
    +-+-+-+-+-+-+-+-+
    |0|0|1|EIP code |
    +-+-+-+-+-+-+-+-+
-   
+~~~
+
    First 3 bits in Option type field: (keep same formatting for inner TLVs)
    - 0 0 Skip if not implemented
    - 1 Content might change at every hop
@@ -87,6 +91,7 @@ Option type
 
 Generic format for EIP TLVs
 
+~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -102,7 +107,7 @@ Generic format for EIP TLVs
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |              TLV content (variable lenght)                    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
+~~~
 
 
    
@@ -113,6 +118,7 @@ Generic format for EIP TLVs
    The keyed Hashed Message Authentication Code (HMAC) TLV is OPTIONAL
    and has the following format:
 
+~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -124,6 +130,7 @@ Generic format for EIP TLVs
    |                      HMAC (variable)                         //
    |                                                              //
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
 EIP extended TLV code:  HMAC = TBA
 
@@ -138,6 +145,7 @@ EIP extended TLV code:  HMAC = TBA
    
    --- Timestamps TLV:
 
+~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -145,33 +153,39 @@ EIP extended TLV code:  HMAC = TBA
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           Timestamps TLV content (variable lenght)            |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
 EIP-TLV code: Timestamps = TBA
 
 Timestamps TLV Parameters
 
+~~~
     0                   1           
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |  Timestamps TLV Parameters    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
-
+~~~
     0                   1           
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type       | Parameters    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
 Type : further characterizes the format and the content of Timestamps
 
 Timestamp Type: Basic = 1
 
+~~~
     0                   1           
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type=1     |LEN|Format |   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
 LEN: the lenght of each timestamp
 
@@ -196,6 +210,7 @@ Format: indicates the format of the timestamp
 Example of a Timestamp TLV of type basic, that carries 8 timestamps 
 of length 2 bytes, each one representing a time granularity of 10 us. 
 
+~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -211,6 +226,7 @@ of length 2 bytes, each one representing a time granularity of 10 us.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |               7               |               8               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
 
 NB using this granularity (10 us) and timestamp size (2 bytes), assuming that 
 all node clocks are synchronized with a maximum error E [ms] it is possible to 
