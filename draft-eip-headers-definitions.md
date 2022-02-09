@@ -56,6 +56,7 @@ The EIP headers could be carried in different ways inside the IPv6 Header. Likel
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
+
 Option type
 
 ~~~
