@@ -6,7 +6,9 @@ This is the working area for the individual Internet-Draft, "Extensible In-band 
 
 This is the working area for the document "Extensible In-band Processing Headers Definitions". Currently this document is not submitted as Internet Draft. A future version of this document could be submitted as Internet Draft, but there is not yet a plan to do it.
 
-* [Editor's Copy](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.html)
+* [Editor's Copy (html)](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.html)
+* [Editor's Copy (txt)](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.txt)
+* [Editor's Copy reference page](https://eip-home.github.io/eip-headers/)
 
 <!-- 
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-eip-headers-definitions)
