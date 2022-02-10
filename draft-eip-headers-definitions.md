@@ -257,20 +257,31 @@ Timestamp Type: Basic = 1
 LEN: the lenght of each timestamp
 
 00 1 byte
+
 01 2 bytes
+
 10 4 bytes
+
 11 8 bytes
 
 Format: indicates the format of the timestamp
 
 0001 :   1 ns
+
 0010 :  10 ns
+
 0011 : 100 ns
+
 0100 :   1 us
+
 0101 :  10 us 
+
 0110 : 100 us 
+
 0111 :   1 ms
+
 1000 : NTP (only for 8 bytes)
+
 1001 : Linux epoch (only for 8 bytes)
 
 
@@ -305,6 +316,7 @@ time and subctracting intermediate timestamps.
 # Work in progress definition of EIP TLV for SRH
 
 First we need to define the EIP TLV. A generic TLV in the SRH is defined as follows.
+
 ~~~
     0                   1
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
@@ -326,12 +338,17 @@ First we need to define the EIP TLV. A generic TLV in the SRH is defined as foll
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
    
    128-251 	Unassigned 	
+
    252-254 	Experimentation and Test 	[RFC8754]
+
    255 	Reserved 	[RFC8754]
  
    127 possible Option Types starting with 001
+   
    1 Reserved
+   
    3 allocated for Experimentation and Test
+   
    123 not allocated
 
 Then we need to define a sub-TLV inside the EIP TLV.
