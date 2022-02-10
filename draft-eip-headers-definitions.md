@@ -33,14 +33,21 @@ informative:
 
 --- abstract
 
-TODO Abstract
+This document discussed the EIP header format.
 
+Caveat: this document is at an early brainstorming stage, 
+it is distributed only to stimulate discussion.
 
 --- middle
 
 # Introduction
 
-The EIP headers could be carried in different ways inside the IPv6 Header. Likely at the end of the analysis/design phase one of the different mechanisms will be selected. For the time being for the purpose of research and experimentation we keep the different alternatives open.
+The EIP headers could be carried in different ways inside the IPv6 Header.
+Likely at the end of the analysis/design phase one of the different mechanisms will be selected. For the time being for the purpose of the discussion we keep the different alternatives open.
+
+Caveat: this document is at an early brainstorming stage, 
+it is distributed only to stimulate discussion.
+
 
 # Work in progress definition of EIP Option for HBH EH
 
@@ -65,7 +72,7 @@ Option type
    +-+-+-+-+-+-+-+-+
 ~~~
 
-   First 3 bits in Option type field: (keep same formatting for inner TLVs)
+   First 3 bits in Option type field: 
    - 0 0 Skip if not implemented
    - 1 Content might change at every hop
    
@@ -110,6 +117,65 @@ Generic format for EIP TLVs
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
+The TLV code can be one byte or two bytes, and the first bit differentiates
+the two cases. With this approach we can have 127 codes of one byte
+and 32768 codes of two bytes.
+
+Considering that we can have codes of different size, we could use LTV (Length-Tag-Value)
+instead of TLVs, as follows:
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |LTV Data Len=xx|0| EIP-TLV code|               |               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |LTV Data Len=xx|1|  EIP extended TLV code      |               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+LTV Data Len in octets (up to 255 bytes for the LTV)
+
+We can use another approach to differentiate between different LTV codes.
+The first two bits of the Len field can differentiate the code length,
+and the remaining 6 bits will specify the length in 32 bits unit (4-octets units)
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0| Data Len  | EIP-LTV code  |               |               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 1| Data Len  |    EIP extended LTV code      |               | 
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0| Data Len  |       EIP double-extended LTV code            | 
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+In this way, we can have 256 codes of one byte, 65536 codes of 2 bytes
+and 2^24 codes of 3 bytes.
 
    
  HMAC TLV
@@ -237,6 +303,63 @@ The entire timestamp will be reconstructed at last node using system
 time and subctracting intermediate timestamps.
 
 # Work in progress definition of EIP TLV for SRH
+
+First we need to define the EIP TLV. A generic TLV in the SRH is defined as follows.
+~~~
+    0                   1
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-----------------------
+   |     Type      |    Length     | Variable-length data
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-----------------------
+~~~
+
+   First bit in type field:
+   1 - Content might change at every hop
+   
+   type code needs (eventually) to be allocated by IANA
+   for the time being we use 252 for the EIP TLV. 
+   This is part of the experimental range
+
+   252-254 	Experimentation and Test 	[RFC8754]
+
+   NB current IANA allocation for Types starting with 1 is
+   (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
+   
+   128-251 	Unassigned 	
+   252-254 	Experimentation and Test 	[RFC8754]
+   255 	Reserved 	[RFC8754]
+ 
+   127 possible Option Types starting with 001
+   1 Reserved
+   3 allocated for Experimentation and Test
+   123 not allocated
+
+Then we need to define a sub-TLV inside the EIP TLV.
+We present only the LTV approach (first the Length, then the type)
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+                                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                   |1|   EIP       |    Length     | 
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0| Data Len  | EIP-LTV code  |               |               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+                                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                   |1|   EIP       |    Length     | 
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 1| Data Len  |    EIP extended LTV code      |               | 
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LTV content (variable lenght)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+
 
 # Conventions and Definitions
 
