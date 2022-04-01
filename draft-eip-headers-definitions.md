@@ -46,12 +46,32 @@ it is distributed only to stimulate discussion.
 
 # Introduction
 
-The EIP headers could be carried in different ways inside the IPv6 Header.
-Likely at the end of the analysis/design phase one of the different mechanisms will be selected. For the time being for the purpose of the discussion we keep the different alternatives open.
-
 Caveat: this document is at an early brainstorming stage, 
 it is distributed only to stimulate discussion.
 
+The EIP header is used to carry information that IPv6 nodes can read and write to implement different use cases.
+EIP provides a common solution which can be extended/tailored for the different use cases.
+
+The design of the EIP header takes into account the requirement to be
+efficient and "hardware friendly". 
+
+The benefits of having EIP as a common header and framework to support 
+multiple use cases will be discussed in this document.
+
+The EIP header could be carried in different ways inside the IPv6 Header.
+Likely at the end of the analysis/design phase one of the different mechanisms will be selected.
+For the time being for the purpose of the discussion we keep different alternatives open:
+1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for SRH
+
+# Benefits of a common EIP header for multiple use cases.
+
+1) The number of available Option Type in HBH header is limited, likewise the number of available TLVs in the Segment Routing Header (SRH) is limited. Defining multiple Option Types or SRH TLVs for multiple use case is not scalable and puts pressure on the allocation of codepoints.
+
+2) The definition and standardization of specific EIP Information Elements (TLVs in the EIP Option for HBH EH or sub-TLVs for SRH TLV) for the different use cases is much simpler.
+
+3) Different use case will share the EIP Information Elements.
+
+4) Efficient and Hardware Friendly mechanisms can be defined when the different EIP Information Elements are carried inside the same EIP header.
 
 # Definition of EIP Option for HBH EH (work in progress)
 
@@ -161,8 +181,9 @@ The LTV length can be up to 63x4=252 bytes.
 In this way, we can have 256 codes of one byte, 65536 codes of 2 bytes
 and 2^24 codes of 3 bytes.
 
+# Definition of EIP LTVs
    
- HMAC TLV
+## HMAC LTV
    
    Alignment requirement: 8n
 
@@ -173,7 +194,7 @@ and 2^24 codes of 3 bytes.
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |   EIP extended TLV code       |     Length    |  RESERVED     |
+   |0 1|  Length   |    EIP extended LTV code      |  RESERVED     | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                      HMAC Key ID (4 octets)                   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -187,15 +208,16 @@ EIP extended TLV code:  HMAC = TBA
 
    Length:  The length of the variable-length data in bytes.
 
-   RESERVED:  16 bits.  MUST be 0 on transmission.
+   RESERVED:  8 bits.  MUST be 0 on transmission.
 
    HMAC Key ID:  A 4-octet opaque number that uniquely identifies the
       pre-shared key and algorithm used to generate the HMAC.
 
    HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
-   
-   --- Timestamps TLV:
 
+## Timestamps LTV:
+
+OLD APPROACH
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -206,7 +228,18 @@ EIP extended TLV code:  HMAC = TBA
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP-TLV code: Timestamps = TBA
+NEW APPROACH
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0| Data Len  | EIP-LTV code  |  Timestamps TLV Parameters    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Timestamps TLV content (variable lenght)            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+EIP-LTV code: Timestamps = TBA
 
 Timestamps TLV Parameters
 
@@ -234,7 +267,7 @@ Timestamp Type: Basic = 1
     0                   1           
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Type=1     |LEN|Format |   |
+   |    Type=1     |LEN|Format |RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
@@ -268,6 +301,7 @@ Format: indicates the format of the timestamp
 
 1001 : Linux epoch (only for 8 bytes)
 
+RES: Reserved, set to 0 0 
 
 Example of a Timestamp TLV of type basic, that carries 8 timestamps 
 of length 2 bytes, each one representing a time granularity of 10 us. 
@@ -278,7 +312,7 @@ of length 2 bytes, each one representing a time granularity of 10 us.
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                                    |0|0|1|   EIP   |Opt Data Len=20|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   | Timestamps    |  TLV Len=18   |    Type=1     |0 1|0 1 0 1|0 0|
+   |0 0| Len=4     |  Timestamps   |    Type=1     |0 1|0 1 0 1|0 0|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |               1               |               2               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
