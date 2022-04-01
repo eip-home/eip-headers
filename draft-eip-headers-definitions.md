@@ -53,7 +53,7 @@ Caveat: this document is at an early brainstorming stage,
 it is distributed only to stimulate discussion.
 
 
-# Work in progress definition of EIP Option for HBH EH
+# Definition of EIP Option for HBH EH (work in progress)
 
 ~~~
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -80,12 +80,12 @@ Option type
    - 0 0 Skip if not implemented
    - 1 Content might change at every hop
    
-   EIP code needs (eventually) to be allocated by IANA
+   (eventually) EIP code needs to be allocated by IANA
    for the time being we use 11110, so overall the Option Type is
    
    0x3E	001	11110	RFC3692-style Experiment
    
-   NB current IANA allocation for Option Types starting with 001 is
+   NB the current IANA allocation for Option Types starting with 001 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
    
    32 possible Option Types starting with 001
@@ -94,39 +94,18 @@ Option type
    1 allocated for RFC3692-style Experiment
    27 not allocated
    
-   Opt Data Len is the lenght in bytes of the rest of the Option
+   Opt Data Len is the lenght in bytes of the rest of the EIP Option
    
-   Within the EIP Option Type, we have a TLV structure
+   Within the EIP Option, we have a LTV structure:
    
-      EIP-TLV a code that is specific of each EIP TLV
-      TLV Len is the lenght in bytes of the rest of the TLV
+      EIP-LTV a code that is specific of each EIP LTV
+      LTV Len is the lenght in bytes of the rest of the LTV
 
-Generic format for EIP TLVs
+Generic format for EIP LTVs
 
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0| EIP-TLV code|TLV Data Len=xx|               |               |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |              TLV content (variable lenght)                    |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1|  EIP extended TLV code      |TLV Data Len=x |               |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |              TLV content (variable lenght)                    |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-
-The TLV code can be one byte or two bytes, and the first bit differentiates
-the two cases. With this approach we can have 127 codes of one byte
-and 32768 codes of two bytes.
-
-Considering that we can have codes of different size, we could use LTV (Length-Tag-Value)
-instead of TLVs, as follows:
+Considering that we can have codes of different size, we use LTV (Length-Tag-Value)
+instead of TLVs, as shown in the following figure.
+The LTV Data Len is in octets (up to 255 bytes for the LTV length).
 
 ~~~
     0                   1                   2                   3
@@ -146,11 +125,12 @@ instead of TLVs, as follows:
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-LTV Data Len in octets (up to 255 bytes for the LTV)
+LTV Data Len in octets (up to 252 bytes for the LTV)
 
 We can use another approach to differentiate between different LTV codes.
 The first two bits of the Len field can differentiate the code length,
-and the remaining 6 bits will specify the length in 32 bits unit (4-octets units)
+and the remaining 6 bits will specify the length in 32 bits units (4-octets units).
+The LTV length can be up to 63x4=252 bytes.
 
 ~~~
     0                   1                   2                   3
@@ -317,7 +297,7 @@ correctly evaluate hop-by-hop delays up to (655-E) [ms]
 The entire timestamp will be reconstructed at last node using system
 time and subctracting intermediate timestamps.
 
-# Work in progress definition of EIP TLV for SRH
+# Definition of EIP TLV for SRH (work in progress) 
 
 First we need to define the EIP TLV. A generic TLV in the SRH is defined as follows.
 
