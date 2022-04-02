@@ -187,7 +187,7 @@ and 2^24 codes of 3 bytes.
    
    Alignment requirement: 8n
 
-   The keyed Hashed Message Authentication Code (HMAC) TLV is OPTIONAL
+   The keyed Hashed Message Authentication Code (HMAC) LTV is OPTIONAL
    and has the following format:
 
 ~~~
