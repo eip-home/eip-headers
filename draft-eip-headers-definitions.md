@@ -411,6 +411,15 @@ The purpose of this LTV is to identify a portion of the EIP Header that has a fi
 This is can be used for parallel hardware processing, but also software processing can be optimized.
 For example, a pre-known sequence of LTVs following the Processing Accelerator LTV can be processed in parallel. The Processing Accelerator LTV can be used to know in advance the size and type of some fields of the following LTVs in order to speed up the processing.
 
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0|  Len = 0  | Proc. Accel.  | Processing Acceleration ID    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+The Processing Acceleration ID is an opaque identifier, its definition is domain-specific.
 
 
 # Conventions and Definitions
