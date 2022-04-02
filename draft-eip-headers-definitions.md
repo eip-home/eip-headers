@@ -50,7 +50,7 @@ Caveat: this document is at an early brainstorming stage,
 it is distributed only to stimulate discussion.
 
 The EIP header is used to carry information that IPv6 nodes can read and write to implement different use cases.
-EIP provides a common solution which can be extended/tailored for the different use cases.
+EIP provides a common framework which can be extended/tailored for the different use cases.
 
 The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly". 
@@ -58,18 +58,20 @@ efficient and "hardware friendly".
 The benefits of having EIP as a common header and framework to support 
 multiple use cases will be discussed in this document.
 
-The EIP header could be carried in different ways inside the IPv6 Header.
-Likely at the end of the analysis/design phase one of the different mechanisms will be selected.
-For the time being for the purpose of the discussion we keep different alternatives open:
-1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for SRH
+The EIP header could be carried in different ways inside the IPv6 Header:
+1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for Segment Routing Header
+At the end of the analysis/design phase either only one of the different mechanisms will be selected or more than one will be specified, to be used depending on the scenario.
 
 # Benefits of a common EIP header for multiple use cases.
 
-1) The number of available Option Type in HBH header is limited, likewise the number of available TLVs in the Segment Routing Header (SRH) is limited. Defining multiple Option Types or SRH TLVs for multiple use case is not scalable and puts pressure on the allocation of codepoints.
+There are reasons why it is beneficial to define a common EIP header that has multiple use cases.
+The EIP header will carry different EIP Information Elements that are defined to support the different use cases. 
 
-2) The definition and standardization of specific EIP Information Elements (TLVs in the EIP Option for HBH EH or sub-TLVs for SRH TLV) for the different use cases is much simpler.
+1) The number of available Option Types in HBH header is limited, likewise the number of available TLVs in the Segment Routing Header (SRH) is limited. Defining multiple Option Types or SRH TLVs for multiple use case is not scalable and puts pressure on the allocation of such codepoints.
 
-3) Different use case will share the EIP Information Elements.
+2) The definition and standardization of specific EIP Information Elements for the different use cases is much simpler, rather than requiring the definition of a new Option Type or SRH TLVs.
+
+3) Different use cases may share the EIP Information Elements.
 
 4) Efficient and Hardware Friendly mechanisms can be defined when the different EIP Information Elements are carried inside the same EIP header.
 
@@ -79,7 +81,7 @@ For the time being for the purpose of the discussion we keep different alternati
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                                    | Option type   |Opt Data Len=xx|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |         EIP-TLVs (variable in number and length)              |
+   |   EIP Information Elements (variable in number and length)    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                         ......                                |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -97,11 +99,13 @@ Option type
 ~~~
 
    First 3 bits in Option type field: 
+
    - 0 0 Skip if not implemented
+   
    - 1 Content might change at every hop
    
    (eventually) EIP code needs to be allocated by IANA
-   for the time being we use 11110, so overall the Option Type is
+   for the time being we use 11110, so overall the Option Type for EIP is
    
    0x3E	001	11110	RFC3692-style Experiment
    
