@@ -421,6 +421,10 @@ For example, a pre-known sequence of LTVs following the Processing Accelerator L
 
 The Processing Acceleration ID is an opaque identifier, its definition is domain-specific.
 
+## Compact Path Tracing LTV
+
+This LTV is a porting of draft-filsfils-spring-path-tracing-00.
+
 
 # Conventions and Definitions
 
