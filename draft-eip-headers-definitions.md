@@ -421,9 +421,31 @@ For example, a pre-known sequence of LTVs following the Processing Accelerator L
 
 The Processing Acceleration ID is an opaque identifier, its definition is domain-specific.
 
-## Compact Path Tracing LTV
+## Compact Path Tracing (CPT) LTV
 
 This LTV is a porting of draft-filsfils-spring-path-tracing-00.
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+                                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                                   |0 0| Data Len  |  Compact PT   |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   ~                          MCD  Stack                           ~
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+MCD Stack has variable size. Recommended by RFC is 36 octets.
+However, the RFC considers an HBH option, which has different alignment requirements.
+When the interface ID (MCD.OIF) is 12 bits, the MCD is equal to 3 octects. There
+are a maximum of 12 MCD elements if the total length is equal to 36 octets.
+If the CPT is the only LTV in the EIP Option, a 6-octects long padding would be needed.
+It would be thus more efficient to bring the length of the MCD Stack to 42 octects
+(14 MCD elements) in that case.
+The  legth should always be variable, but in the EIP case, we recommend a 42 octects
+MCD Stack, instead of a 36 long one.
 
 
 # Conventions and Definitions
