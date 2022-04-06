@@ -230,7 +230,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Data Len  | EIP-LTV code  |        LTV content            |
+   |0 1| Data Len  | EIP-LTV code  |        LTV content            |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -238,7 +238,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 1| Data Len  |    EIP extended LTV code      | LTV content   | 
+   |1 0| Data Len  |    EIP extended LTV code      | LTV content   | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -246,7 +246,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| Data Len  |       EIP double-extended LTV code            | 
+   |1 1| Data Len  |       EIP double-extended LTV code            | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -423,29 +423,72 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of draft-filsfils-spring-path-tracing-00.
+This LTV is a porting of draft-filsfils-spring-path-tracing-00 into the EIP framework.
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-                                   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                                   |0 0| Data Len  |  Compact PT   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0| Data Len  |         Compact PT            |Type |  RES    |  
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                              +
    |                                                               |
    ~                          MCD  Stack                           ~
    |                                                               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-MCD Stack has variable size. Recommended by RFC is 36 octets.
-However, the RFC considers an HBH option, which has different alignment requirements.
-When the interface ID (MCD.OIF) is 12 bits, the MCD is equal to 3 octects. There
+Compact PT : 1 EIP LTV code 
+
+Ultra Compact (Type = 000)
+MCD 24 Bits (3 bytes)   
+Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
+
+Compact (Type = 001)
+MCD 32 Bits (4 bytes)
+Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
+
+
+MCD Stack has variable size. [draft-path-tracing] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
+
+In our case, when MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
+When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
+
+
+[draft-path-tracing] draft-filsfils-spring-path-tracing-00
+
+
+## Compact Path Tracing (UCPT) LTV
+
+This LTV is a porting of draft-filsfils-spring-path-tracing-00.
+
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 0| Data Len  |       Compact PT              |               |  
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                              +
+   |                                                               |
+   ~                          MCD  Stack                           ~
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+MCD Stack has variable size. [draft-path-tracing] recommends 36 octets.
+However, [draft-path-tracing] considers an HBH option, which has different alignment requirements.
+When the interface ID (MCD.OIF) is 12 bits, the MCD is equal to 3 octects. 
+Timestamp 
+We suggest 
+There
 are a maximum of 12 MCD elements if the total length is equal to 36 octets.
 If the CPT is the only LTV in the EIP Option, a 6-octects long padding would be needed.
 It would be thus more efficient to bring the length of the MCD Stack to 42 octects
 (14 MCD elements) in that case.
 The  legth should always be variable, but in the EIP case, we recommend a 42 octects
 MCD Stack, instead of a 36 long one.
+
+[draft-path-tracing] draft-filsfils-spring-path-tracing-00
+
 
 
 # Conventions and Definitions
