@@ -453,39 +453,31 @@ MCD Stack has variable size. [draft-path-tracing] recommends 36 octets for a MCD
 In our case, when MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
 When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
 
-
-[draft-path-tracing] draft-filsfils-spring-path-tracing-00
-
-
-## Compact Path Tracing (UCPT) LTV
-
-This LTV is a porting of draft-filsfils-spring-path-tracing-00.
-
+### Authenticated mode
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Data Len  |       Compact PT              |               |
+   |0 0| Data Len  |         Compact PT            |Type |  RES    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
    |                                                               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   ~                             HMAC                              ~
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-MCD Stack has variable size. [draft-path-tracing] recommends 36 octets.
-However, [draft-path-tracing] considers an HBH option, which has different alignment requirements.
-When the interface ID (MCD.OIF) is 12 bits, the MCD is equal to 3 octects. 
-Timestamp 
-We suggest 
-There
-are a maximum of 12 MCD elements if the total length is equal to 36 octets.
-If the CPT is the only LTV in the EIP Option, a 6-octects long padding would be needed.
-It would be thus more efficient to bring the length of the MCD Stack to 42 octects
-(14 MCD elements) in that case.
-The  legth should always be variable, but in the EIP case, we recommend a 42 octects
-MCD Stack, instead of a 36 long one.
+An HMAC is appended at the end of the MCD Stack. The size of the HMAC is a multiple of 8 octects.
+
+Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
+An identifier for every single node is not needed, because it can be derived from the MCD Stack.
+The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
+
+
 
 [draft-path-tracing] draft-filsfils-spring-path-tracing-00
 
