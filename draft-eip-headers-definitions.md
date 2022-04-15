@@ -75,7 +75,7 @@ The EIP header will carry different EIP Information Elements that are defined to
 
 4) Efficient and Hardware Friendly mechanisms can be defined when the different EIP Information Elements are carried inside the same EIP header.
 
-# Definition of EIP Option for HBH EH (work in progress)
+# Definition of EIP Option for HBH EH 
 
 The EIP header can be carried as an Option in the Hop by Hop Extension Header, as shown in the following figure.
 
@@ -128,7 +128,7 @@ Option type
       LTV Len is the lenght in bytes of the rest of the LTV
 
 
-# Definition of EIP TLV for SRH (work in progress) 
+# Definition of EIP TLV for SRH 
 
 The EIP header can be carried as a TLV in the Segment Routing Header. A generic TLV in the SRH is defined as follows.
 
@@ -290,7 +290,7 @@ EIP extended TLV code:  HMAC = TBA
    RESERVED:  8 bits.  MUST be 0 on transmission.
 
    HMAC Key ID:  A 4-octet opaque number that uniquely identifies the
-      pre-shared key and algorithm used to generate the HMAC.
+   pre-shared key and algorithm used to generate the HMAC.
 
    HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
 
@@ -340,7 +340,7 @@ Timestamps TLV Parameters
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Type : further characterizes the format and the content of Timestamps
+Type : it further characterizes the format and the content of Timestamps
 
 Timestamp Type: Basic = 1
 
@@ -403,7 +403,7 @@ all node clocks are synchronized with a maximum error E [ms] it is possible to
 correctly evaluate hop-by-hop delays up to (655-E) [ms]
 
 The entire timestamp will be reconstructed at last node using system
-time and subctracting intermediate timestamps.
+time and subtracting intermediate timestamps.
 
 ## Processing Accelerator LTV
 
@@ -419,6 +419,8 @@ For example, a pre-known sequence of LTVs following the Processing Accelerator L
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
+Proc. Accel. : EIP-LTV code, To Be Assigned
+
 The Processing Acceleration ID is an opaque identifier, its definition is domain-specific.
 
 ## Compact Path Tracing (CPT) LTV
@@ -429,7 +431,7 @@ This LTV is a porting of draft-filsfils-spring-path-tracing-00 into the EIP fram
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Data Len  |         Compact PT            |Type |  RES    |
+   |0 0|  Length   |         Compact PT            |Type |  RES    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -437,7 +439,11 @@ This LTV is a porting of draft-filsfils-spring-path-tracing-00 into the EIP fram
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Compact PT : 1 EIP LTV code 
+Compact PT : EIP extended LTV code, To Be Assigned
+
+Type : 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
+
+RES: Reserved, set to 00000
 
 Ultra Compact (Type = 000)
 MCD 24 Bits (3 bytes)   
@@ -447,13 +453,14 @@ Compact (Type = 001)
 MCD 32 Bits (4 bytes)
 Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
 
+The MCD Stack has variable size. [draft-path-tracing] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
 
-MCD Stack has variable size. [draft-path-tracing] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
+In our case, taking into account the alignment requirements, we have the following recommendation.
 
-In our case, when MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
+When MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
 When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
 
-### Authenticated mode
+### CPT Authenticated mode
 
 ~~~
     0                   1                   2                   3
@@ -471,12 +478,11 @@ When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a to
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-An HMAC is appended at the end of the MCD Stack. The size of the HMAC is a multiple of 8 octects.
+In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The size of the HMAC is a multiple of 8 octects.
 
 Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
-
 
 
 [draft-path-tracing] draft-filsfils-spring-path-tracing-00
