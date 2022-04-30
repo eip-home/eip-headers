@@ -37,7 +37,7 @@ informative:
 
 --- abstract
 
-This document discussed the EIP header format.
+This document discusseds the EIP header format.
 
 Caveat: this document is at an early brainstorming stage, 
 it is distributed only to stimulate discussion.
@@ -60,12 +60,13 @@ multiple use cases will be discussed in this document.
 
 The EIP header could be carried in different ways inside the IPv6 Header:
 1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for Segment Routing Header
-At the end of the analysis/design phase either only one of the different mechanisms will be selected or more than one will be specified, to be used depending on the scenario.
+
+It has to be decided if only one of the two mechanisms will be selected or if it will be deemed useful to specify both mechanisms.
 
 # Benefits of a common EIP header for multiple use cases.
 
-There are reasons why it is beneficial to define a common EIP header that has multiple use cases.
-The EIP header will carry different EIP Information Elements that are defined to support the different use cases. 
+The EIP header will carry different EIP Information Elements that are defined to support the different use cases.
+There are reasons why it is beneficial to define a common EIP header that support multiple use cases.
 
 1) The number of available Option Types in HBH header is limited, likewise the number of available TLVs in the Segment Routing Header (SRH) is limited. Defining multiple Option Types or SRH TLVs for multiple use case is not scalable and puts pressure on the allocation of such codepoints.
 
@@ -114,12 +115,14 @@ Option type
    NB the current IANA allocation for Option Types starting with 001 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
    
+~~~
    32 possible Option Types starting with 001
    2 allocated by RFCs
    2 temporary allocated by Internet Drafts
    1 allocated for RFC3692-style Experiment
    27 not allocated
-   
+~~~
+
    Opt Data Len is the lenght in bytes of the rest of the EIP Option
    
    Within the EIP Option, we have a LTV structure:
@@ -152,19 +155,20 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
    NB current IANA allocation for Types starting with 1 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
    
+~~~
+   127 possible Option Types starting with 001
+   123 not allocated
+   3 allocated for Experimentation and Test
+   1 Reserved
+~~~   
+
    128-251 	Unassigned 	
 
    252-254 	Experimentation and Test 	[RFC8754]
 
    255 	Reserved 	[RFC8754]
  
-   127 possible Option Types starting with 001
    
-   1 Reserved
-   
-   3 allocated for Experimentation and Test
-   
-   123 not allocated
 
 The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereafter.
 
@@ -264,16 +268,16 @@ The selected approach is the #2, because it is more flexible and it supports a m
    
 ## HMAC LTV
    
-   Alignment requirement: 8n
+Alignment requirement: 8n
 
-   The keyed Hashed Message Authentication Code (HMAC) LTV is OPTIONAL
-   and has the following format:
+The keyed Hashed Message Authentication Code (HMAC) LTV is OPTIONAL
+and has the following format:
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 1|  Length   |    EIP extended LTV code      |  RESERVED     | 
+   |1 0|  Data Len |    EIP extended LTV code      |  RESERVED     | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                      HMAC Key ID (4 octets)                   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -283,16 +287,68 @@ The selected approach is the #2, because it is more flexible and it supports a m
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP extended TLV code:  HMAC = TBA
+EIP extended LTV code:  HMAC = TBA
 
-   Length:  The length of the variable-length data in bytes.
+Data Len:  the length of the optional part of the LTV content in 4-bytes units:
+the counting starts from the second row, if there is only one row (4 bytes)
+the Data Len will be zero.
 
-   RESERVED:  8 bits.  MUST be 0 on transmission.
+RESERVED:  8 bits.  MUST be 0 on transmission.
 
-   HMAC Key ID:  A 4-octet opaque number that uniquely identifies the
-   pre-shared key and algorithm used to generate the HMAC.
+HMAC Key ID:  A 4-octet opaque number that uniquely identifies the
+pre-shared key and algorithm used to generate the HMAC.
 
-   HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
+HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
+
+## EIP Identifiers LTVs
+
+EIP identifiers can be used for different use-cases. They can be used to
+identify a "slice", or a Customer, or they can be used to carry a "Contract Identifier".
+Two classes of EIP Identifies are defined, Short and Long Identifiers. Short Identifiers
+are 16 bits Identifiers. Long Identifiers are Nx32 bits long (N>=1). 
+Long Identifiers can be further structured according to the specific use case.
+
+
+### EIP Short Identifier LTV
+   
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 1| Data Len  | EIP-LTV code  |    Short  Identifier          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+EIP-LTV code:  EIP Short Identifier = TBA
+
+Data Len:  The length of the variable-length data in 4-bytes units is 
+zero in this case.
+
+Short Identifier: it is a 16 bits identifier, useful when up to 65536 
+different Identifiers are needed.
+
+### EIP Long Identifier LTV
+   
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0| Data Len  |     EIP extended LTV code     |    ID type    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              EIP Long Identifier   (variable lenght)          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+EIP extended LTV code:  EIP Long Identifier = TBA
+
+Data Len:  The length of the variable-length part of the data in 4-bytes units. 
+
+ID type: maybe used to qualify different types of identifiers. By default it is zero.
+An ID type can be used to specify a structure for the variable length part of
+the Long Identifier.
+
+EIP Long Identifier: an identifier of variable length (in multiple of 4 bytes)
+
 
 ## Timestamps LTV:
 
@@ -314,7 +370,7 @@ NEW APPROACH
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Data Len  | EIP-LTV code  |  Timestamps TLV Parameters    |
+   |0 1| Data Len  | EIP-LTV code  |  Timestamps TLV Parameters    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           Timestamps TLV content (variable lenght)            |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -386,7 +442,7 @@ of length 2 bytes, each one representing a time granularity of 10 us.
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                                    |0|0|1|   EIP   |Opt Data Len=20|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Len=4     |  Timestamps   |    Type=1     |0 1|0 1 0 1|0 0|
+   |0 1| Len=4     |  Timestamps   |    Type=1     |0 1|0 1 0 1|0 0|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |               1               |               2               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -415,7 +471,7 @@ For example, a pre-known sequence of LTVs following the Processing Accelerator L
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0|  Len = 0  | Proc. Accel.  | Processing Acceleration ID    |
+   |0 1|  Len = 0  | Proc. Accel.  | Processing Acceleration ID    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
@@ -431,7 +487,7 @@ This LTV is a porting of draft-filsfils-spring-path-tracing-00 into the EIP fram
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0|  Length   |         Compact PT            |Type |  RES    |
+   |1 0|  Length   |         Compact PT            |Type |  RES    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -460,13 +516,13 @@ In our case, taking into account the alignment requirements, we have the followi
 When MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
 When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
 
-### CPT Authenticated mode
+### Authenticated mode for Compact PT
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 0| Data Len  |         Compact PT            |Type |  RES    |
+   |1 0| Data Len  |         Compact PT            |Type |  RES    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -483,7 +539,6 @@ In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The 
 Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
-
 
 [draft-path-tracing] draft-filsfils-spring-path-tracing-00
 
