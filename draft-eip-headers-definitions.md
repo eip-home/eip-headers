@@ -191,9 +191,9 @@ The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereaf
 # Generic format for EIP Information Elements
 
 EIP Information Elements are used to carry the information needed by the different use cases.
-The same Information Element can be reused across multiple use cases.
+The same Information Element can be reused across multiple use cases. 
 
-An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements will be variable in length.
+An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have three different length.
 
 In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value). 
 
@@ -300,6 +300,9 @@ pre-shared key and algorithm used to generate the HMAC.
 
 HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
 
+The details of the use of the HMAC LTV (HMAC Generation and Verification and 
+HMAC Algorithms) are borrowed from section 2.1.2 of RFC 8754 {{RFC8754}}. 
+
 ## EIP Identifiers LTVs
 
 EIP identifiers can be used for different use-cases. They can be used to
@@ -307,6 +310,8 @@ identify a "slice", or a Customer, or they can be used to carry a "Contract Iden
 Two classes of EIP Identifies are defined, Short and Long Identifiers. Short Identifiers
 are 16 bits Identifiers. Long Identifiers are Nx32 bits long (N>=1). 
 Long Identifiers can be further structured according to the specific use case.
+EIP Long Identifiers can also be used to carry sequence numbers or transaction identifiers
+to identify a specific packet or a specific transaction.
 
 
 ### EIP Short Identifier LTV
@@ -349,22 +354,45 @@ the Long Identifier.
 
 EIP Long Identifier: an identifier of variable length (in multiple of 4 bytes)
 
+~~~
+ID type = 1 : Sequence Number only
+ID type = 2 : Sequence Number and Generic Long Identifier
+~~~
 
-## Timestamps LTV:
-
-OLD APPROACH (deprecated)
+The EIP Long Identifier LTV only carrying a Sequence Number is shown hereafter.
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0|EIP-TLV code | TLV Data Len  |  Timestamps TLV Parameters    |
+   |1 0| DataLen=1 |  EIP_ext_cod=Long Identifier  |  ID type = 1  |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |           Timestamps TLV content (variable lenght)            |
+   |                      Sequence number                          |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-NEW APPROACH
+The EIP Long Identifier LTV carrying a Sequence Number in addition to a generic Long
+identifier is shown hereafter.
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0| DataLen>1 |  EIP_ext_cod=Long Identifier  |  ID type = 1  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                      Sequence number                          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              EIP Long Identifier   (variable lenght)          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+
+
+## Timestamps LTV:
+
+The Timestamp Information Element can used to collect timing information in different
+nodes along the packet path (source, destination, intermediate nodes), according to
+different use cases.
 
 ~~~
     0                   1                   2                   3
@@ -378,15 +406,8 @@ NEW APPROACH
 
 EIP-LTV code: Timestamps = TBA
 
-Timestamps TLV Parameters
-
-~~~
-    0                   1           
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |  Timestamps TLV Parameters    |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
+The "Timestamps TLV Parameters" is a 16 bits field, it is split into two 8 bits
+fields as follows:
 
 ~~~
     0                   1           
@@ -460,6 +481,27 @@ correctly evaluate hop-by-hop delays up to (655-E) [ms]
 
 The entire timestamp will be reconstructed at last node using system
 time and subtracting intermediate timestamps.
+
+
+## Node selection and fingerprinting LTV
+
+This Information Element is useful to send instructions to a single node in the packet
+path or to a subset of nodes. 
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |0 1| Data Len  | EIP-LTV code  |    Type       | Parameters    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+Type = Modulus
+Type = Destination only
+Type = Segment End only
+Type = Segment End, Modulus
+
+
 
 ## Processing Accelerator LTV
 
