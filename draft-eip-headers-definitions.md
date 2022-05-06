@@ -548,7 +548,7 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of {{I-D.filsfils-spring-path-tracing}} into the EIP framework.
+This LTV is a porting of {{I-D.PATH-TRACING=I-D.filsfils-spring-path-tracing}} into the EIP framework.
 
 ~~~
     0                   1                   2                   3
@@ -576,7 +576,7 @@ Compact (Type = 001)
 MCD 32 Bits (4 bytes)
 Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
 
-The MCD Stack has variable size. [draft-path-tracing] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
+The MCD Stack has variable size. [I-D.PATH-TRACING] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
 
 In our case, taking into account the alignment requirements, we have the following recommendation.
 
