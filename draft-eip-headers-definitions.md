@@ -34,7 +34,7 @@ normative:
   RFC8754:
 
 informative:
-  I-D.filsfils-spring-path-tracing:
+  ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
 
 # for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
@@ -548,7 +548,7 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of {{!ID-PATH-TRACING=I-D.filsfils-spring-path-tracing}} into the EIP framework.
+This LTV is a porting of {{I-D.filsfils-spring-path-tracing}} into the EIP framework.
 
 ~~~
     0                   1                   2                   3
