@@ -36,6 +36,7 @@ normative:
 informative:
   I-D.filsfils-spring-path-tracing:
 
+# for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
 --- abstract
 
@@ -490,8 +491,8 @@ time and subtracting intermediate timestamps.
 
 This Information Element can be used for two purposes:
 
-1) associate the "scope" of some information contained in the EIP header to one or more nodes
-in the "downstream" path of the packet
+1) associate some instruction contained in the EIP header to one or more 
+target nodes in the "downstream" path of the packet
 
 example 1.1: ask a specific node to write some information in the EIP header, if this specific
 node will be crossed by the packet
