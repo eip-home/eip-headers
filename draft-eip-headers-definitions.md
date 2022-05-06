@@ -11,7 +11,7 @@ keyword: Internet-Draft
 venue:
   group: EIP
   type: SIG
-  mail: eip@postino.cnit.it
+  mail: eip@cnit.it
   arch: http://postino.cnit.it/cgi-bin/mailman/private/eip/
   github: eip-home/eip-headers
   latest: https://eip-home.github.io/eip-headers/draft-eip-headers-definitions.html
@@ -548,7 +548,7 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of {{ID-PATH-TRACING=I-D.filsfils-spring-path-tracing}} into the EIP framework.
+This LTV is a porting of {{!ID-PATH-TRACING=I-D.filsfils-spring-path-tracing}} into the EIP framework.
 
 ~~~
     0                   1                   2                   3
