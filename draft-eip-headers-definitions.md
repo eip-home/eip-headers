@@ -34,11 +34,12 @@ normative:
   RFC8754:
 
 informative:
+  draft-filsfils-spring-path-tracing-00:
 
 
 --- abstract
 
-This document discusseds the EIP header format.
+This document discusses the EIP header format.
 
 Caveat: this document is at an early brainstorming stage, 
 it is distributed only to stimulate discussion.
@@ -50,11 +51,12 @@ it is distributed only to stimulate discussion.
 Caveat: this document is at an early brainstorming stage, 
 it is distributed only to stimulate discussion.
 
-The EIP header is used to carry information that IPv6 nodes can read and write to implement different use cases.
+The EIP header is used to carry information that IPv6 nodes (hosts and routers) can read and write to support different use cases.
 EIP provides a common framework which can be extended/tailored for the different use cases.
 
 The design of the EIP header takes into account the requirement to be
-efficient and "hardware friendly". 
+efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
+on hardware achieving line rate forwarding needs to be reasonable). 
 
 The benefits of having EIP as a common header and framework to support 
 multiple use cases will be discussed in this document.
@@ -194,11 +196,11 @@ The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereaf
 EIP Information Elements are used to carry the information needed by the different use cases.
 The same Information Element can be reused across multiple use cases. 
 
-An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have three different length.
+An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have different sizes. In particular, we select a solution in which the Codes can have three different lengths (respectively one byte, two bytes or three bytes).
 
 In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value). 
 
-We are currently considering two approaches for the structure of the EIP Information Elements or EIP LTVs
+We have considered two approaches for the structure of the EIP Information Elements or EIP LTVs.
 
 ## Proposed approach #1 for EIP LTVs.
 
@@ -208,7 +210,7 @@ In this approach, we have one byte LTV Data Length field. The LTV Data Len is in
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |LTV Data Len=xx|0| EIP-TLV code|       LTV content             |
+   |LTV Data Len=xx|0| EIP-LTV Code|       LTV content             |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -216,7 +218,7 @@ In this approach, we have one byte LTV Data Length field. The LTV Data Len is in
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |LTV Data Len=xx|1|  EIP extended TLV code      | LTV content   |
+   |LTV Data Len=xx|1|  EIP extended LTV Code      | LTV content   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -235,7 +237,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 1| Data Len  | EIP-LTV code  |        LTV content            |
+   |0 1| Data Len  | EIP-LTV Code  |        LTV content            |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -243,7 +245,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| Data Len  |    EIP extended LTV code      | LTV content   | 
+   |1 0| Data Len  |    EIP extended LTV Code      | LTV content   | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -251,7 +253,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 1| Data Len  |       EIP double-extended LTV code            | 
+   |1 1| Data Len  |       EIP double-extended LTV Code            | 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -486,22 +488,43 @@ time and subtracting intermediate timestamps.
 
 ## Node selection and fingerprinting LTV
 
-This Information Element is useful to send instructions to a single node in the packet
-path or to a subset of nodes. 
+This Information Element can be used for two purposes:
+
+1) associate the "scope" of some information contained in the EIP header to one or more nodes
+in the "downstream" path of the packet
+
+example 1.1: ask a specific node to write some information in the EIP header, if this specific
+node will be crossed by the packet
+
+example 1.2: ask one node every N hops to write some information in the EIP header
+
+2) identify the nodes that have inserted some information in the EIP header
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |0 1| Data Len  | EIP-LTV code  |    Type       | Parameters    |
+   |0 1| Data Len  | EIP-LTV code  |    Type       |     Scope     |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |   Hop Count   |    Param_1    |    Param_2    |F| Back counter|   
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Target node list (optional, variable lenght)           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |     Collected information list (optional, variable lenght)    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Type = Modulus
+~~~
+Type = All nodes (Skip M), Param_1 is M, Param_2 is the limit (number of nodes)
+Type = Modulus, Param_1 is the modulus, Param_2 is the limit 
 Type = Destination only
-Type = Segment End only
-Type = Segment End, Modulus
+Type = Segment End only, Param_2 is the limit 
+Type = Segment End Modulus, Param_1 is the modulus, Param_2 is the limit
+Type = Target Node(s), Param_2 is the number of nodes
+~~~
 
+Scope : If Scope = 0x00 the node selection applies to all the following EIP Information Elements (LTVs)
+If Scope = N > 0x00 only to the first N LTVs following the Scope are affected by the selection.
 
 
 ## Processing Accelerator LTV
@@ -524,7 +547,7 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of draft-filsfils-spring-path-tracing-00 into the EIP framework.
+This LTV is a porting of {{draft-filsfils-spring-path-tracing-00}} into the EIP framework.
 
 ~~~
     0                   1                   2                   3
