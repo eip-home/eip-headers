@@ -30,13 +30,13 @@ author:
     organization: Consultant
     email: "helbakoury@gmail.com"
 
+### for help with the syntax, see https://github.com/cabo/kramdown-rfc
+
 normative:
   RFC8754:
 
 informative:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
-
-# for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
 --- abstract
 
