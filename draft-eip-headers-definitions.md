@@ -39,7 +39,7 @@ normative:
 
 informative:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
-  draft-eip-use-cases:
+  id-eip-use-cases:
     title: "Extensible In-band Processing (EIP) Use Cases"
     author: 
      -
@@ -56,8 +56,8 @@ informative:
     seriesInfo: 
        Internet-Draft: draft-eip-use-cases
     format:
-       TXT: "https://eip-home.github.io/eip-headers/draft-eip-headers-definitions.txt"
-  draft-eip-arch:
+       TXT: "https://eip-home.github.io/eip-headers/draft-eip-use-cases.txt"
+  id-eip-arch:
     title: "Extensible In-band Processing (EIP) Architecture and Framework"
     author: 
      -
@@ -89,11 +89,11 @@ it is distributed only to stimulate discussion.
 
 # Introduction
 
-Caveat: this document is at an early brainstorming stage, 
+Caveat: this document is still in brainstorming stage, 
 it is distributed only to stimulate discussion.
 
-The EIP header is used to carry information that IPv6 nodes (hosts and routers) can read and write to support different use cases.
-EIP provides a common framework which can be extended/tailored for the different use cases.
+The EIP header is used to carry information that IPv6 nodes (hosts and routers) can read and write to support different use cases. The use cases for EIP are discussed in [id-eip-use-cases].
+EIP provides a common architecture and framework which can be extended/tailored for the different use cases. The EIP architecture is discussed in [id-eip-arch].
 
 The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
