@@ -7,7 +7,9 @@ docname: draft-eip-headers-definitions-latest
 ipr: trust200902
 area: AREA
 workgroup: SIG on EIP
-keyword: Internet-Draft
+keyword:
+ - IPv6
+ - Extension Headers
 venue:
   group: EIP
   type: SIG
