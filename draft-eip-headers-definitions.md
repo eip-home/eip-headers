@@ -1,5 +1,5 @@
 ---
-title: "Extensible In-band Processing Headers Definitions"
+title: "Extensible In-band Processing (EIP) Headers Definitions"
 abbrev: "EIP Headers"
 category: info
 
@@ -7,7 +7,9 @@ docname: draft-eip-headers-definitions-latest
 ipr: trust200902
 area: AREA
 workgroup: SIG on EIP
-keyword: Internet-Draft
+keyword: 
+ - IPv6
+ - Extension Headers
 venue:
   group: EIP
   type: SIG
@@ -35,6 +37,26 @@ normative:
 
 informative:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
+  draft-eip-use-cases:
+    title: "Extensible In-band Processing (EIP) Use Cases"
+    author: 
+     -
+        name: "Stefano Salsano"
+        ins: "S. Salsano"
+        organization: Univ. of Rome Tor Vergata / CNIT
+        email: "stefano.salsano@uniroma2.it"
+     -
+        name: "Hesham ElBakoury"
+        ins: "H. ElBakoury"
+        organization: Consultant
+        email: "helbakoury@gmail.com"
+    date: 2022
+    seriesInfo: 
+       Internet-Draft: draft-eip-use-cases
+    format:
+       TXT: "https://eip-home.github.io/eip-headers/draft-eip-headers-definitions.txt"
+
+
 
 # for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
@@ -57,7 +79,7 @@ EIP provides a common framework which can be extended/tailored for the different
 
 The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
-on hardware achieving line rate forwarding needs to be reasonable). 
+in hardware achieving line rate forwarding needs to be reasonable). 
 
 The benefits of having EIP as a common header and framework to support 
 multiple use cases will be discussed in this document.
@@ -65,7 +87,7 @@ multiple use cases will be discussed in this document.
 The EIP header could be carried in different ways inside the IPv6 Header:
 1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for Segment Routing Header
 
-It has to be decided if only one of the two mechanisms will be selected or if it will be deemed useful to specify both mechanisms.
+It has to be decided if only one of the two mechanisms will be selected or if it will be deemed useful to specify and support both mechanisms.
 
 # Benefits of a common EIP header for multiple use cases.
 
@@ -487,7 +509,7 @@ The entire timestamp will be reconstructed at last node using system
 time and subtracting intermediate timestamps.
 
 
-## Node selection and fingerprinting LTV
+## Node selection and identification LTV
 
 This Information Element can be used for two purposes:
 
