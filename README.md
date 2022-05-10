@@ -4,7 +4,7 @@
 This is the working area for the individual Internet-Draft, "Extensible In-band Processing Headers Definitions".
 -->
 
-This is the working area for the document "Extensible In-band Processing Headers Definitions". Currently this document is not submitted as Internet Draft. A future version of this document could be submitted as Internet Draft, but there is not yet a plan to do it.
+This is the working area for the document "Extensible In-band Processing Headers Definitions". Currently this document is not submitted as Internet Draft. A future version of this document could be submitted as Internet Draft.
 
 * [Editor's Copy (html)](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.html)
 * [Editor's Copy (txt)](https://eip-home.github.io/eip-headers/#go.draft-eip-headers-definitions.txt)
@@ -17,6 +17,8 @@ This is the working area for the document "Extensible In-band Processing Headers
 -->
 
 ## Contributing
+
+For help with the syntax, see https://github.com/cabo/kramdown-rfc
 
 See the
 [guidelines for contributions](https://github.com/eip-home/eip-headers/blob/main/CONTRIBUTING.md).

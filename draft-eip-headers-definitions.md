@@ -7,7 +7,7 @@ docname: draft-eip-headers-definitions-latest
 ipr: trust200902
 area: AREA
 workgroup: SIG on EIP
-keyword: 
+keyword:
  - IPv6
  - Extension Headers
 venue:
@@ -31,6 +31,8 @@ author:
     name: "Hesham ElBakoury"
     organization: Consultant
     email: "helbakoury@gmail.com"
+
+### for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
 normative:
   RFC8754:
@@ -57,8 +59,6 @@ informative:
        TXT: "https://eip-home.github.io/eip-headers/draft-eip-headers-definitions.txt"
 
 
-
-# for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
 --- abstract
 
