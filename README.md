@@ -18,7 +18,9 @@ This is the working area for the document "Extensible In-band Processing Headers
 
 ## Contributing
 
-For help with the syntax, see https://github.com/cabo/kramdown-rfc
+For help with the syntax, see:
+* https://github.com/cabo/kramdown-rfc
+* https://www.ietf.org/media/documents/92kramdown-Bormann.pdf
 
 See the
 [guidelines for contributions](https://github.com/eip-home/eip-headers/blob/main/CONTRIBUTING.md).
