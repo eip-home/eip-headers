@@ -31,6 +31,10 @@ author:
     name: "Hesham ElBakoury"
     organization: Consultant
     email: "helbakoury@gmail.com"
+ -
+    name: "Giulio Sidoretti"
+    organization: Univ. of Rome Tor Vergata / CNIT
+    email: "giulio.sidoretti@uniroma2.it"
 
 ### for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
@@ -654,5 +658,5 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+Giulio Sidoretti has contributed to the section on Compact Path Tracing.
 
