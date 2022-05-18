@@ -301,7 +301,7 @@ The selected approach is the #2, because it is more flexible and it supports a m
    
 ## HMAC LTV
    
-Alignment requirement: 8n
+Alignment requirement: 8n (TODO: maybe it will be 4n)
 
 The keyed Hashed Message Authentication Code (HMAC) LTV is OPTIONAL
 and has the following format:
@@ -320,11 +320,10 @@ and has the following format:
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP extended LTV code:  HMAC = TBA
+EIP extended LTV code:  HMAC (see {{code-mapping}} in {{sec-ltv-codes}})
 
-Data Len:  the length of the optional part of the LTV content in 4-bytes units:
-the counting starts from the second row, if there is only one row (4 bytes)
-the Data Len will be zero.
+Data Len:  the length of HMAC LTV in 4-bytes units, excluding the first row:
+the counting starts from the second row (HMAC Key ID). 
 
 RESERVED:  8 bits.  MUST be 0 on transmission.
 
@@ -578,7 +577,7 @@ The Processing Acceleration ID is an opaque identifier, its definition is domain
 
 ## Compact Path Tracing (CPT) LTV
 
-This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing" [ID-PATH-TRACING] into the EIP framework.
+This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing" [ID-PATH-TRACING] into the EIP framework. It contains a stack of "MCD" (Midpoint Compressed Data) representing information inserted by every transit router for path tracing purposes.
 
 ~~~
     0                   1                   2                   3
@@ -636,6 +635,18 @@ In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The 
 Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
+
+# Code assignment for EIP Information Elements (a.k.a. EIP LTVs)
+
+{: #sec-ltv-codes}
+## EIP LTV Codes
+
+| Information Element | Code |
+| Short Identifier  |  0x01 |
+{: #ltv-codes}
+
+## EIP Extended LTV Codes
+
 
 
 
