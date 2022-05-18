@@ -320,7 +320,7 @@ and has the following format:
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP extended LTV code:  HMAC (see {{code-mapping}} in {{sec-ltv-codes}})
+EIP extended LTV code:  HMAC (see {{ltv-codes}} in {{sec-ltv-codes}})
 
 Data Len:  the length of HMAC LTV in 4-bytes units, excluding the first row:
 the counting starts from the second row (HMAC Key ID). 
@@ -337,7 +337,7 @@ HMAC Algorithms) are borrowed from section 2.1.2 of RFC 8754 {{RFC8754}}.
 
 ## EIP Identifiers LTVs
 
-EIP identifiers can be used for different use-cases. They can be used to
+EIP identifiers can be used for different use-cases. For example, they can be used to
 identify a "slice", or a Customer, or they can be used to carry a "Contract Identifier".
 Two classes of EIP Identifies are defined, Short and Long Identifiers. Short Identifiers
 are 16 bits Identifiers. Long Identifiers are Nx32 bits long (N>=1). 
