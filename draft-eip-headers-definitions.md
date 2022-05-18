@@ -388,6 +388,7 @@ the Long Identifier.
 EIP Long Identifier: an identifier of variable length (in multiple of 4 bytes)
 
 ~~~
+ID type = 0 : Generic Long Identifier
 ID type = 1 : Sequence Number only
 ID type = 2 : Sequence Number and Generic Long Identifier
 ~~~
@@ -411,7 +412,7 @@ identifier is shown hereafter.
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| DataLen>1 |  EIP_ext_cod=Long Identifier  |  ID type = 1  |
+   |1 0| DataLen>1 |  EIP_ext_cod=Long Identifier  |  ID type = 2  |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                      Sequence number                          |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
