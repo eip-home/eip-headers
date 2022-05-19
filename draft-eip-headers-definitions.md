@@ -143,7 +143,7 @@ Option type
    (eventually) EIP code needs to be allocated by IANA
    for the time being we use 11110, so overall the Option Type for EIP is
    
-   0x3E (001 11110)	RFC3692-style Experiment
+   0x3E (001 11110) RFC3692-style Experiment
    
    NB the current IANA allocation for Option Types starting with 001 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
@@ -183,23 +183,23 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
    for the time being we use 252 for the EIP TLV. 
    This is part of the experimental range
 
-   252-254 	Experimentation and Test 	[RFC8754]
+   252-254  Experimentation and Test  [RFC8754]
 
    NB current IANA allocation for Types starting with 1 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
    
 ~~~
-   127 possible Option Types starting with 001
+   127 possible Option Types starting with 1
    123 not allocated
    3 allocated for Experimentation and Test
    1 Reserved
 ~~~   
 
-   128-251 	Unassigned 	
+   128-251  Unassigned  
 
-   252-254 	Experimentation and Test 	[RFC8754]
+   252-254  Experimentation and Test  [RFC8754]
 
-   255 	Reserved 	[RFC8754]
+   255  Reserved  [RFC8754]
  
    
 
@@ -290,7 +290,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
 ~~~
 
 In this approach, we can have 256 codes of one byte, 65536 codes of 2 bytes
-and 2^24 codes of 3 bytes.
+and 2^24 codes of 3 bytes. The codes of one byte will be referred to as "Short codes", the codes of two bytes will be referred to as "Extended codes", the codes of three bytes will be referred to as "Double extended codes".
 
 ## Decision on the approach for EIP LTVs
 
@@ -320,7 +320,7 @@ and has the following format:
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP extended LTV code:  HMAC (see {{ltv-codes}} in {{sec-ltv-codes}})
+EIP extended LTV code:  HMAC (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Data Len:  the length of HMAC LTV in 4-bytes units, excluding the first row:
 the counting starts from the second row (HMAC Key ID). 
@@ -356,7 +356,7 @@ to identify a specific packet or a specific transaction.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP-LTV code:  EIP Short Identifier = TBA
+EIP-LTV code: Short Identifier (see {{ltv-codes}} in {{sec-ltv-codes}})
 
 Data Len:  The length of the variable-length data in 4-bytes units is 
 zero in this case.
@@ -376,7 +376,7 @@ different Identifiers are needed.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP extended LTV code:  EIP Long Identifier = TBA
+EIP extended LTV code: Long Identifier (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Data Len:  The length of the variable-length part of the data in 4-bytes units. 
 
@@ -437,7 +437,7 @@ different use cases.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-EIP-LTV code: Timestamps = TBA
+EIP-LTV code: Timestamps (see {{ltv-codes}} in {{sec-ltv-codes}})
 
 The "Timestamps TLV Parameters" is a 16 bits field, it is split into two 8 bits
 fields as follows:
@@ -571,7 +571,7 @@ For example, a pre-known sequence of LTVs following the Processing Accelerator L
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Proc. Accel. : EIP-LTV code, To Be Assigned
+Proc. Accel. : EIP Short code (see {{ltv-codes}} in {{sec-ltv-codes}})
 
 The Processing Acceleration ID is an opaque identifier, its definition is domain-specific.
 
@@ -591,7 +591,7 @@ This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing"
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Compact PT : EIP extended LTV code, To Be Assigned
+Compact PT : EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Type : 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
 
@@ -643,11 +643,18 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 
 | Information Element | Code |
 | Short Identifier  |  0x01 |
-{: #ltv-codes}
+| Processing Accelerator  |  0x02 |
+| Timestamps | TBA |
+{: #ltv-codes} Short Codes (1 bytes) for EIP LTVs
 
+{: #sec-ext-ltv-codes}
 ## EIP Extended LTV Codes
 
-
+| Information Element | Code |
+| HMAC  | 0x0001 |
+| Compact Path Tracing (CPT) | 0x0002 |
+| Long Identifier | 0x0003 |
+{: #ltv-ext-codes} Extended Codes (2 bytes) for EIP LTVs
 
 
 
