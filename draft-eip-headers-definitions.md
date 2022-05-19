@@ -4,6 +4,7 @@ abbrev: "EIP Headers"
 category: info
 
 docname: draft-eip-headers-definitions-latest
+submissiontype: independent  # also: "independent", "IAB", or "IRTF", "IETF"
 ipr: trust200902
 area: AREA
 workgroup: SIG on EIP
@@ -545,11 +546,11 @@ example 1.2: ask one node every N hops to write some information in the EIP head
 ~~~
 
 ~~~
-Type = All nodes (Skip M), Param_1 is M, Param_2 is the limit (number of nodes)
-Type = Modulus, Param_1 is the modulus, Param_2 is the limit 
+Type = All nodes (Skip M), Param_1 : M, Param_2 : limit (num. of nodes)
+Type = Modulus, Param_1 : modulus, Param_2 : limit 
 Type = Destination only
 Type = Segment End only, Param_2 is the limit 
-Type = Segment End Modulus, Param_1 is the modulus, Param_2 is the limit
+Type = Segment End Modulus, Param_1 : modulus, Param_2 : limit
 Type = Target Node(s), Param_2 is the number of nodes
 ~~~
 
@@ -639,7 +640,7 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 # Code assignment for EIP Information Elements (a.k.a. EIP LTVs)
 
 {: #sec-ltv-codes}
-## EIP LTV Codes
+## LTV Short Codes
 
 | Information Element | Code |
 | Short Identifier  |  0x01 |
@@ -649,7 +650,7 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 
 
 {: #sec-ext-ltv-codes}
-## EIP Extended LTV Codes
+## LTV Extended Codes
 
 | Information Element | Code |
 | HMAC  | 0x0001 |
