@@ -645,7 +645,8 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 | Short Identifier  |  0x01 |
 | Processing Accelerator  |  0x02 |
 | Timestamps | TBA |
-{: #ltv-codes} Short Codes (1 bytes) for EIP LTVs
+{: #ltv-codes}
+Short Codes (1 bytes) for EIP LTVs
 
 {: #sec-ext-ltv-codes}
 ## EIP Extended LTV Codes
@@ -654,7 +655,8 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 | HMAC  | 0x0001 |
 | Compact Path Tracing (CPT) | 0x0002 |
 | Long Identifier | 0x0003 |
-{: #ltv-ext-codes} Extended Codes (2 bytes) for EIP LTVs
+{: #ltv-ext-codes}
+Extended Codes (2 bytes) for EIP LTVs
 
 
 
