@@ -584,7 +584,7 @@ This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing"
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |         Compact PT            |Type |  RES    |
+   |1 0|  Length   |         Compact PT            |Type |HML| RES |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -592,9 +592,11 @@ This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing"
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-Compact PT : EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
+Compact PT: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
-Type : 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
+Type: 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
+
+HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects. Max length of the HMAC will be 32 octects.
 
 RES: Reserved, set to 00000
 
@@ -619,7 +621,7 @@ When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a to
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| Data Len  |         Compact PT            |Type |  RES    |
+   |1 0| Data Len  |         Compact PT            |Type |HML| RES |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -631,7 +633,7 @@ When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a to
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The size of the HMAC is a multiple of 8 octects.
+In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).
 
 Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
