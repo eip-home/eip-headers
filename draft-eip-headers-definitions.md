@@ -509,8 +509,8 @@ of length 2 bytes, each one representing a time granularity of 10 us.
 ~~~
 
 NB using this granularity (10 us) and timestamp size (2 bytes), assuming that 
-all node clocks are synchronized with a maximum error E [ms] it is possible to 
-correctly evaluate hop-by-hop delays up to (655-E) [ms]
+all node clocks are synchronized with a maximum error E \[ms\] it is possible to 
+correctly evaluate hop-by-hop delays up to (655-E) \[ms\]
 
 The entire timestamp will be reconstructed at last node using system
 time and subtracting intermediate timestamps.
@@ -645,8 +645,8 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 | Short Identifier  |  0x01 |
 | Processing Accelerator  |  0x02 |
 | Timestamps | TBA |
-{: #ltv-codes}
-Short Codes (1 bytes) for EIP LTVs
+{: #ltv-codes  title="Short Codes (1 bytes) for EIP LTVs"}
+
 
 {: #sec-ext-ltv-codes}
 ## EIP Extended LTV Codes
@@ -655,8 +655,8 @@ Short Codes (1 bytes) for EIP LTVs
 | HMAC  | 0x0001 |
 | Compact Path Tracing (CPT) | 0x0002 |
 | Long Identifier | 0x0003 |
-{: #ltv-ext-codes}
-Extended Codes (2 bytes) for EIP LTVs
+{: #ltv-ext-codes title="Extended Codes (2 bytes) for EIP LTVs"}
+
 
 
 
