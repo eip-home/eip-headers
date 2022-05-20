@@ -602,7 +602,7 @@ HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it s
 `MAC length = (HML + 1) * 8 bytes`.\
 Max length of the HMAC will be 32 octects.
 
-RES: Reserved, set to 000
+RES: Reserved, set to 00.
 
 ~~~
 Ultra Compact (Type = 000)
@@ -623,7 +623,7 @@ In our case, taking into account the alignment requirements, we have the followi
 When MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
 When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
 
-### Authenticated mode for Compact PT
+### Authenticated mode for Compact Path Tracing
 
 ~~~
     0                   1                   2                   3
@@ -647,55 +647,64 @@ Each intermediate node calculates the HMAC for the whole CPT LTV, including the 
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
 
-## Geotagging LTVs
-Geographical location data in network packets can be useful for multiple use cases. We describe an LTV used for enhanced semantic routing and an LTV used for packet tracing.
-### Geotagging for Semantic Routing (GSR) LTV
+### Geotagged Compact Path Tracing
+~~~
+TODO
+~~~
+
+## Geotagging for Semantic Routing (GSR) LTV
+We describe an LTV used for enhanced semantic routing.
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
+   |1 0|  Length   |Geotagging for Semantic Routing|Type |   RES   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |              LONG             |              LAT              |
+   |                      Position (Variable)                      |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-#### Geotagging for Semantic Routing (GSR) High Precision Mode
+
+Geotagging for Semantic Routing: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
+
+Type: 3 bits, specifies the content of the Position field and the encoding used to represent the geographical location.
+
+RES: Reserved, set to 0.
+
+Position: Contains the geographical location data. Its length must be a multiple of 4 octects.
+
+~~~
+Geohash Short (Type = 000)
+30 bits + 2 bits padding
+LAT error: ± 610 m
+LONG error: ± 305 m
+~~~
+
+~~~
+Geohash Long (Type = 001)
+60 bits + 4 bits padding
+LAT error: ± 18.6 mm
+LONG error: ± 9.3 mm
+~~~
+
+### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
+   |1 0|  Length   |Geotagging for Semantic Routing|Type |A|HML|RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                              LONG                             |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                              LAT                              |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-#### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   ~                     LONG + LAT (variable)                     ~
+   ~                      Position (variable)                      ~
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                             HMAC                              ~
    |                                                               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-Geotagging for Semantic Routing: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
-
-P: Precision. P=0 represents LONG and LAT fields of 2 octects. P=1 represents fields of 4 octects.
-
 A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
 
 HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
 `MAC length = (HML + 1) * 8 bytes`.\
 Max length of the HMAC will be 32 octects.
-
-RES: Reserved, set to 00000.
 
 In the authenticated mode, an HMAC is appended at the end of the Information Element. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).
 
