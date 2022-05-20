@@ -194,15 +194,15 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
    123 not allocated
    3 allocated for Experimentation and Test
    1 Reserved
-~~~   
+~~~
 
-   128-251  Unassigned  
+   128-251  Unassigned
 
    252-254  Experimentation and Test  [RFC8754]
 
    255  Reserved  [RFC8754]
- 
-   
+
+
 
 The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereafter.
 
@@ -210,7 +210,7 @@ The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereaf
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
                                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                                   |1|   EIP       |    Length     | 
+                                   |1|   EIP       |    Length     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |   EIP Information Elements (variable in number and length)    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -225,11 +225,11 @@ The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereaf
 # Generic format for EIP Information Elements
 
 EIP Information Elements are used to carry the information needed by the different use cases.
-The same Information Element can be reused across multiple use cases. 
+The same Information Element can be reused across multiple use cases.
 
 An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have different sizes. In particular, we select a solution in which the Codes can have three different lengths (respectively one byte, two bytes or three bytes).
 
-In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value). 
+In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value).
 
 We have considered two approaches for the structure of the EIP Information Elements or EIP LTVs.
 
@@ -276,7 +276,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| Data Len  |    EIP extended LTV Code      | LTV content   | 
+   |1 0| Data Len  |    EIP extended LTV Code      | LTV content   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -284,7 +284,7 @@ Note that when the Data Len is 0, the optional part of the LTV content is not pr
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 1| Data Len  |       EIP double-extended LTV Code            | 
+   |1 1| Data Len  |       EIP double-extended LTV Code            |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |          LTV content (optional, variable lenght)              |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -299,9 +299,9 @@ The selected approach is the #2, because it is more flexible and it supports a m
 
 
 # Definition of EIP Information Elements (a.k.a. EIP LTVs)
-   
+
 ## HMAC LTV
-   
+
 Alignment requirement: 8n (TODO: maybe it will be 4n)
 
 The keyed Hashed Message Authentication Code (HMAC) LTV is OPTIONAL
@@ -311,7 +311,7 @@ and has the following format:
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Data Len |    EIP extended LTV code      |  RESERVED     | 
+   |1 0|  Data Len |    EIP extended LTV code      |  RESERVED     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                      HMAC Key ID (4 octets)                   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -324,31 +324,31 @@ and has the following format:
 EIP extended LTV code:  HMAC (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Data Len:  the length of HMAC LTV in 4-bytes units, excluding the first row:
-the counting starts from the second row (HMAC Key ID). 
+the counting starts from the second row (HMAC Key ID).
 
 RESERVED:  8 bits.  MUST be 0 on transmission.
 
 HMAC Key ID:  A 4-octet opaque number that uniquely identifies the
 pre-shared key and algorithm used to generate the HMAC.
 
-HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.  
+HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.
 
-The details of the use of the HMAC LTV (HMAC Generation and Verification and 
-HMAC Algorithms) are borrowed from section 2.1.2 of RFC 8754 {{RFC8754}}. 
+The details of the use of the HMAC LTV (HMAC Generation and Verification and
+HMAC Algorithms) are borrowed from section 2.1.2 of RFC 8754 {{RFC8754}}.
 
 ## EIP Identifiers LTVs
 
 EIP identifiers can be used for different use-cases. For example, they can be used to
 identify a "slice", or a Customer, or they can be used to carry a "Contract Identifier".
 Two classes of EIP Identifies are defined, Short and Long Identifiers. Short Identifiers
-are 16 bits Identifiers. Long Identifiers are Nx32 bits long (N>=1). 
+are 16 bits Identifiers. Long Identifiers are Nx32 bits long (N>=1).
 Long Identifiers can be further structured according to the specific use case.
 EIP Long Identifiers can also be used to carry sequence numbers or transaction identifiers
 to identify a specific packet or a specific transaction.
 
 
 ### EIP Short Identifier LTV
-   
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -359,14 +359,14 @@ to identify a specific packet or a specific transaction.
 
 EIP-LTV code: Short Identifier (see {{ltv-codes}} in {{sec-ltv-codes}})
 
-Data Len:  The length of the variable-length data in 4-bytes units is 
+Data Len:  The length of the variable-length data in 4-bytes units is
 zero in this case.
 
-Short Identifier: it is a 16 bits identifier, useful when up to 65536 
+Short Identifier: it is a 16 bits identifier, useful when up to 65536
 different Identifiers are needed.
 
 ### EIP Long Identifier LTV
-   
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -379,7 +379,7 @@ different Identifiers are needed.
 
 EIP extended LTV code: Long Identifier (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
-Data Len:  The length of the variable-length part of the data in 4-bytes units. 
+Data Len:  The length of the variable-length part of the data in 4-bytes units.
 
 ID type: maybe used to qualify different types of identifiers. By default it is zero.
 An ID type can be used to specify a structure for the variable length part of
@@ -444,8 +444,8 @@ The "Timestamps TLV Parameters" is a 16 bits field, it is split into two 8 bits
 fields as follows:
 
 ~~~
-    0                   1           
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
+    0                   1
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type       | Parameters    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -456,8 +456,8 @@ Type : it further characterizes the format and the content of Timestamps
 Timestamp Type: Basic = 1
 
 ~~~
-    0                   1           
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
+    0                   1
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type=1     |LEN|Format |RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -479,17 +479,17 @@ Format: indicates the format of the timestamp
 0010 :  10 ns
 0011 : 100 ns
 0100 :   1 us
-0101 :  10 us 
-0110 : 100 us 
+0101 :  10 us
+0110 : 100 us
 0111 :   1 ms
 1000 : NTP (only for 8 bytes)
 1001 : Linux epoch (only for 8 bytes)
 ~~~
 
-RES: Reserved, set to 0 0 
+RES: Reserved, set to 0 0
 
-Example of a Timestamp TLV of type basic, that carries 8 timestamps 
-of length 2 bytes, each one representing a time granularity of 10 us. 
+Example of a Timestamp TLV of type basic, that carries 8 timestamps
+of length 2 bytes, each one representing a time granularity of 10 us.
 
 ~~~
     0                   1                   2                   3
@@ -509,8 +509,8 @@ of length 2 bytes, each one representing a time granularity of 10 us.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-NB using this granularity (10 us) and timestamp size (2 bytes), assuming that 
-all node clocks are synchronized with a maximum error E \[ms\] it is possible to 
+NB using this granularity (10 us) and timestamp size (2 bytes), assuming that
+all node clocks are synchronized with a maximum error E \[ms\] it is possible to
 correctly evaluate hop-by-hop delays up to (655-E) \[ms\]
 
 The entire timestamp will be reconstructed at last node using system
@@ -521,7 +521,7 @@ time and subtracting intermediate timestamps.
 
 This Information Element can be used for two purposes:
 
-1) associate some instruction contained in the EIP header to one or more 
+1) associate some instruction contained in the EIP header to one or more
 target nodes in the "downstream" path of the packet
 
 example 1.1: ask a specific node to write some information in the EIP header, if this specific
@@ -537,7 +537,7 @@ example 1.2: ask one node every N hops to write some information in the EIP head
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |0 1| Data Len  | EIP-LTV code  |    Type       |     Scope     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |   Hop Count   |    Param_1    |    Param_2    |F| Back counter|   
+   |   Hop Count   |    Param_1    |    Param_2    |F| Back counter|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |        Target node list (optional, variable lenght)           |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -547,9 +547,9 @@ example 1.2: ask one node every N hops to write some information in the EIP head
 
 ~~~
 Type = All nodes (Skip M), Param_1 : M, Param_2 : limit (num. of nodes)
-Type = Modulus, Param_1 : modulus, Param_2 : limit 
+Type = Modulus, Param_1 : modulus, Param_2 : limit
 Type = Destination only
-Type = Segment End only, Param_2 is the limit 
+Type = Segment End only, Param_2 is the limit
 Type = Segment End Modulus, Param_1 : modulus, Param_2 : limit
 Type = Target Node(s), Param_2 is the number of nodes
 ~~~
@@ -605,7 +605,7 @@ RES: Reserved, set to 000
 ~~~
 Ultra Compact (Type = 000)
 Ultra Compact Authenticated Mode (Type = 002)
-MCD 24 Bits (3 bytes)   
+MCD 24 Bits (3 bytes)
 Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
 ~~~
 
@@ -613,7 +613,7 @@ Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
 Compact (Type = 001)
 Compact Authenticated Mode (Type = 003)
 MCD 32 Bits (4 bytes)
-Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
+Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
 ~~~
 
 The MCD Stack has variable size. [ID-PATH-TRACING] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
