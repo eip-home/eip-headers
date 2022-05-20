@@ -647,6 +647,58 @@ Each intermediate node calculates the HMAC for the whole CPT LTV, including the 
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
 
+## Geotagging LTVs
+Geographical location data in network packets can be useful for multiple use cases. We describe an LTV used for enhanced semantic routing and an LTV used for packet tracing.
+### Geotagging for Semantic Routing (GSR) LTV
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |              LONG             |              LAT              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+#### Geotagging for Semantic Routing (GSR) High Precision Mode
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                              LONG                             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                              LAT                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+#### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |Geotagging for Semantic Routing|P|A|HML|  RES  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ~                     LONG + LAT (variable)                     ~
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   ~                             HMAC                              ~
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+Geotagging for Semantic Routing: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
+
+P: Precision. P=0 represents LONG and LAT fields of 2 octects. P=1 represents fields of 4 octects.
+
+A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
+
+HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
+`MAC length = (HML + 1) * 8 bytes`.\
+Max length of the HMAC will be 32 octects.
+
+RES: Reserved, set to 00000.
+
+In the authenticated mode, an HMAC is appended at the end of the Information Element. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).
+
 # Code assignment for EIP Information Elements (a.k.a. EIP LTVs)
 
 {: #sec-ltv-codes}
@@ -691,4 +743,3 @@ This document has no IANA actions.
 {:numbered="false"}
 
 Giulio Sidoretti has contributed to the section on Compact Path Tracing.
-
