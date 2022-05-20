@@ -348,7 +348,7 @@ to identify a specific packet or a specific transaction.
 
 
 ### EIP Short Identifier LTV
-   
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -445,7 +445,7 @@ fields as follows:
 
 ~~~
     0                   1
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type       | Parameters    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -457,7 +457,7 @@ Timestamp Type: Basic = 1
 
 ~~~
     0                   1
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type=1     |LEN|Format |RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -605,7 +605,7 @@ RES: Reserved, set to 000
 ~~~
 Ultra Compact (Type = 000)
 Ultra Compact Authenticated Mode (Type = 002)
-MCD 24 Bits (3 bytes)   
+MCD 24 Bits (3 bytes)
 Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
 ~~~
 
