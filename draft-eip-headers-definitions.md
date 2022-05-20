@@ -596,18 +596,22 @@ Compact PT: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Type: 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
 
-HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects. Max length of the HMAC will be 32 octects.
+HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
+`MAC length = (HML + 1) * 8 bytes`.\
+Max length of the HMAC will be 32 octects.
 
-RES: Reserved, set to 00000
+RES: Reserved, set to 000
 
 ~~~
 Ultra Compact (Type = 000)
+Ultra Compact Authenticated Mode (Type = 002)
 MCD 24 Bits (3 bytes)   
 Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
 ~~~
 
 ~~~
 Compact (Type = 001)
+Compact Authenticated Mode (Type = 003)
 MCD 32 Bits (4 bytes)
 Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
 ~~~
