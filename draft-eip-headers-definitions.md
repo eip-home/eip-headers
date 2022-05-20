@@ -101,7 +101,7 @@ The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
 in hardware achieving line rate forwarding needs to be reasonable).
 
-The benefits of having EIP as a common header and framework to support 
+The benefits of having EIP as a common header and framework to support
 multiple use cases are discussed in [id-eip-arch].
 
 The EIP header could be carried in different ways inside the IPv6 Header:
@@ -138,17 +138,17 @@ Option type
    First 3 bits in Option type field:
 
    - 0 0 Skip if not implemented
-   
+
    - 1 Content might change at every hop
-   
+
    (eventually) EIP code needs to be allocated by IANA
    for the time being we use 11110, so overall the Option Type for EIP is
-   
+
    0x3E (001 11110) RFC3692-style Experiment
-   
+
    NB the current IANA allocation for Option Types starting with 001 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
-   
+
 ~~~
    32 possible Option Types starting with 001
    2 allocated by RFCs
@@ -158,9 +158,9 @@ Option type
 ~~~
 
    Opt Data Len is the lenght in bytes of the rest of the EIP Option
-   
+
    Within the EIP Option, we have a LTV structure:
-   
+
       EIP-LTV a code that is specific of each EIP LTV
       LTV Len is the lenght in bytes of the rest of the LTV
 
@@ -179,7 +179,7 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
 
    First bit in type field:
    1 - Content might change at every hop
-   
+
    type code needs (eventually) to be allocated by IANA
    for the time being we use 252 for the EIP TLV.
    This is part of the experimental range
@@ -188,13 +188,13 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
 
    NB current IANA allocation for Types starting with 1 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
-   
+
 ~~~
    127 possible Option Types starting with 1
    123 not allocated
    3 allocated for Experimentation and Test
    1 Reserved
-~~~   
+~~~
 
    128-251  Unassigned
 
@@ -229,7 +229,7 @@ The same Information Element can be reused across multiple use cases.
 
 An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have different sizes. In particular, we select a solution in which the Codes can have three different lengths (respectively one byte, two bytes or three bytes).
 
-In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value). 
+In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value).
 
 We have considered two approaches for the structure of the EIP Information Elements or EIP LTVs.
 
@@ -333,7 +333,7 @@ pre-shared key and algorithm used to generate the HMAC.
 
 HMAC:  Keyed HMAC, in multiples of 8 octets, at most 32 octets.
 
-The details of the use of the HMAC LTV (HMAC Generation and Verification and 
+The details of the use of the HMAC LTV (HMAC Generation and Verification and
 HMAC Algorithms) are borrowed from section 2.1.2 of RFC 8754 {{RFC8754}}.
 
 ## EIP Identifiers LTVs
@@ -366,7 +366,7 @@ Short Identifier: it is a 16 bits identifier, useful when up to 65536
 different Identifiers are needed.
 
 ### EIP Long Identifier LTV
-   
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -444,7 +444,7 @@ The "Timestamps TLV Parameters" is a 16 bits field, it is split into two 8 bits
 fields as follows:
 
 ~~~
-    0                   1           
+    0                   1
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type       | Parameters    |
@@ -456,7 +456,7 @@ Type : it further characterizes the format and the content of Timestamps
 Timestamp Type: Basic = 1
 
 ~~~
-    0                   1           
+    0                   1
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Type=1     |LEN|Format |RES|
@@ -479,8 +479,8 @@ Format: indicates the format of the timestamp
 0010 :  10 ns
 0011 : 100 ns
 0100 :   1 us
-0101 :  10 us 
-0110 : 100 us 
+0101 :  10 us
+0110 : 100 us
 0111 :   1 ms
 1000 : NTP (only for 8 bytes)
 1001 : Linux epoch (only for 8 bytes)
@@ -488,7 +488,7 @@ Format: indicates the format of the timestamp
 
 RES: Reserved, set to 0 0
 
-Example of a Timestamp TLV of type basic, that carries 8 timestamps 
+Example of a Timestamp TLV of type basic, that carries 8 timestamps
 of length 2 bytes, each one representing a time granularity of 10 us.
 
 ~~~
@@ -509,8 +509,8 @@ of length 2 bytes, each one representing a time granularity of 10 us.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-NB using this granularity (10 us) and timestamp size (2 bytes), assuming that 
-all node clocks are synchronized with a maximum error E \[ms\] it is possible to 
+NB using this granularity (10 us) and timestamp size (2 bytes), assuming that
+all node clocks are synchronized with a maximum error E \[ms\] it is possible to
 correctly evaluate hop-by-hop delays up to (655-E) \[ms\]
 
 The entire timestamp will be reconstructed at last node using system
@@ -521,7 +521,7 @@ time and subtracting intermediate timestamps.
 
 This Information Element can be used for two purposes:
 
-1) associate some instruction contained in the EIP header to one or more 
+1) associate some instruction contained in the EIP header to one or more
 target nodes in the "downstream" path of the packet
 
 example 1.1: ask a specific node to write some information in the EIP header, if this specific
@@ -537,7 +537,7 @@ example 1.2: ask one node every N hops to write some information in the EIP head
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |0 1| Data Len  | EIP-LTV code  |    Type       |     Scope     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |   Hop Count   |    Param_1    |    Param_2    |F| Back counter|   
+   |   Hop Count   |    Param_1    |    Param_2    |F| Back counter|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |        Target node list (optional, variable lenght)           |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -547,9 +547,9 @@ example 1.2: ask one node every N hops to write some information in the EIP head
 
 ~~~
 Type = All nodes (Skip M), Param_1 : M, Param_2 : limit (num. of nodes)
-Type = Modulus, Param_1 : modulus, Param_2 : limit 
+Type = Modulus, Param_1 : modulus, Param_2 : limit
 Type = Destination only
-Type = Segment End only, Param_2 is the limit 
+Type = Segment End only, Param_2 is the limit
 Type = Segment End Modulus, Param_1 : modulus, Param_2 : limit
 Type = Target Node(s), Param_2 is the number of nodes
 ~~~
