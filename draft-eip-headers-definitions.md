@@ -46,7 +46,7 @@ informative:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
   id-eip-use-cases:
     title: "Extensible In-band Processing (EIP) Use Cases"
-    author: 
+    author:
      -
         name: "Stefano Salsano"
         ins: "S. Salsano"
@@ -58,13 +58,13 @@ informative:
         organization: Consultant
         email: "helbakoury@gmail.com"
     date: 2022
-    seriesInfo: 
+    seriesInfo:
        Internet-Draft: draft-eip-use-cases
     format:
        TXT: "https://eip-home.github.io/eip-headers/draft-eip-use-cases.txt"
   id-eip-arch:
     title: "Extensible In-band Processing (EIP) Architecture and Framework"
-    author: 
+    author:
      -
         name: "Stefano Salsano"
         ins: "S. Salsano"
@@ -76,7 +76,7 @@ informative:
         organization: Consultant
         email: "helbakoury@gmail.com"
     date: 2022
-    seriesInfo: 
+    seriesInfo:
        Internet-Draft: draft-eip-arch
     format:
        TXT: "https://eip-home.github.io/eip-arch/draft-eip-arch.txt"
@@ -87,7 +87,7 @@ informative:
 
 This document discusses the EIP header format.
 
-Caveat: this document is still in brainstorming stage, 
+Caveat: this document is still in brainstorming stage,
 it is distributed to stimulate discussion.
 
 --- middle
@@ -99,9 +99,9 @@ EIP provides a common architecture and framework which can be extended/tailored 
 
 The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
-in hardware achieving line rate forwarding needs to be reasonable). 
+in hardware achieving line rate forwarding needs to be reasonable).
 
-The benefits of having EIP as a common header and framework to support 
+The benefits of having EIP as a common header and framework to support
 multiple use cases are discussed in [id-eip-arch].
 
 The EIP header could be carried in different ways inside the IPv6 Header:
@@ -110,7 +110,7 @@ The EIP header could be carried in different ways inside the IPv6 Header:
 It has to be decided if only one of the two mechanisms will be selected or if it will be deemed useful to specify and support both mechanisms.
 
 
-# Definition of EIP Option for HBH EH 
+# Definition of EIP Option for HBH EH
 
 The EIP header can be carried as an Option in the Hop by Hop Extension Header, as shown in the following figure.
 
@@ -135,20 +135,20 @@ Option type
    +-+-+-+-+-+-+-+-+
 ~~~
 
-   First 3 bits in Option type field: 
+   First 3 bits in Option type field:
 
    - 0 0 Skip if not implemented
-   
+
    - 1 Content might change at every hop
-   
+
    (eventually) EIP code needs to be allocated by IANA
    for the time being we use 11110, so overall the Option Type for EIP is
-   
+
    0x3E (001 11110) RFC3692-style Experiment
-   
+
    NB the current IANA allocation for Option Types starting with 001 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
-   
+
 ~~~
    32 possible Option Types starting with 001
    2 allocated by RFCs
@@ -158,14 +158,14 @@ Option type
 ~~~
 
    Opt Data Len is the lenght in bytes of the rest of the EIP Option
-   
+
    Within the EIP Option, we have a LTV structure:
-   
+
       EIP-LTV a code that is specific of each EIP LTV
       LTV Len is the lenght in bytes of the rest of the LTV
 
 
-# Definition of EIP TLV for SRH 
+# Definition of EIP TLV for SRH
 
 The EIP header can be carried as a TLV in the Segment Routing Header. A generic TLV in the SRH is defined as follows.
 
@@ -179,16 +179,16 @@ The EIP header can be carried as a TLV in the Segment Routing Header. A generic 
 
    First bit in type field:
    1 - Content might change at every hop
-   
+
    type code needs (eventually) to be allocated by IANA
-   for the time being we use 252 for the EIP TLV. 
+   for the time being we use 252 for the EIP TLV.
    This is part of the experimental range
 
    252-254  Experimentation and Test  [RFC8754]
 
    NB current IANA allocation for Types starting with 1 is
    (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml#segment-routing-header-tlvs)
-   
+
 ~~~
    127 possible Option Types starting with 1
    123 not allocated
