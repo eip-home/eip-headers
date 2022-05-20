@@ -600,13 +600,17 @@ HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it s
 
 RES: Reserved, set to 00000
 
+~~~
 Ultra Compact (Type = 000)
 MCD 24 Bits (3 bytes)   
 Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
+~~~
 
+~~~
 Compact (Type = 001)
 MCD 32 Bits (4 bytes)
 Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit) 
+~~~
 
 The MCD Stack has variable size. [ID-PATH-TRACING] recommends 36 octets for a MCD of 3 bytes (12 MCDs).
 
