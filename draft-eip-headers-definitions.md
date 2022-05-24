@@ -584,7 +584,7 @@ This LTV is a porting of the Internet Draft "draft-filsfils-spring-path-tracing"
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |         Compact PT            |Type |HML| RES |
+   |1 0|  Length   |         Compact PT            |Type |A|HML|RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -596,22 +596,22 @@ Compact PT: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
 Type: 3 bits, specifies the content of the CPT LTV including the format of the MCD element.
 
+A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
+
 HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
 `MAC length = (HML + 1) * 8 bytes`.\
 Max length of the HMAC will be 32 octects.
 
-RES: Reserved, set to 000
+RES: Reserved, set to 00.
 
 ~~~
 Ultra Compact (Type = 000)
-Ultra Compact Authenticated Mode (Type = 002)
 MCD 24 Bits (3 bytes)
 Timestamp (8 bit) | Interface ID (12 bit) | Load (4 bit)
 ~~~
 
 ~~~
 Compact (Type = 001)
-Compact Authenticated Mode (Type = 003)
 MCD 32 Bits (4 bytes)
 Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
 ~~~
@@ -623,13 +623,13 @@ In our case, taking into account the alignment requirements, we have the followi
 When MCD is 3 bytes, we recommend 13 MCDs for a total of 39 bytes.
 When MCD is 4 bytes, we recommend an even number of MCD, for example 10 for a total of 40 bytes or 12 for a total of 48 bytes.
 
-### Authenticated mode for Compact PT
+### Authenticated mode for Compact Path Tracing
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0| Data Len  |         Compact PT            |Type |HML| RES |
+   |1 0| Data Len  |         Compact PT            |Type |A|HML|RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                                                               |
    ~                          MCD  Stack                           ~
@@ -646,6 +646,67 @@ In the authenticated mode, an HMAC is appended at the end of the MCD Stack. The 
 Each intermediate node calculates the HMAC for the whole CPT LTV, including the HMAC field. The newly calculated HMAC then overwrites the previous node's HMAC. The first node will just use an HMAC field set to all zeros.
 An identifier for every single node is not needed, because it can be derived from the MCD Stack.
 The destination node can reconstruct the different HMAC fields at heach hop to check if the final HMAC is consistent.
+
+### Geotagged Compact Path Tracing
+~~~
+TODO
+~~~
+
+## Geotagging for Semantic Routing (GSR) LTV
+We describe an LTV used for enhanced semantic routing.
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |Geotagging for Semantic Routing|Type |   RES   |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                      Position (Variable)                      |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+Geotagging for Semantic Routing: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
+
+Type: 3 bits, specifies the content of the Position field and the encoding used to represent the geographical location.
+
+RES: Reserved, set to 0.
+
+Position: Contains the geographical location data. Its length must be a multiple of 4 octects.
+
+~~~
+Geohash Short (Type = 000)
+30 bits + 2 bits padding
+LAT error: ± 610 m
+LONG error: ± 305 m
+~~~
+
+~~~
+Geohash Long (Type = 001)
+60 bits + 4 bits padding
+LAT error: ± 18.6 mm
+LONG error: ± 9.3 mm
+~~~
+
+### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |Geotagging for Semantic Routing|Type |A|HML|RES|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ~                      Position (variable)                      ~
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                                                               |
+   ~                             HMAC                              ~
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
+
+HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
+`MAC length = (HML + 1) * 8 bytes`.\
+Max length of the HMAC will be 32 octects.
+
+In the authenticated mode, an HMAC is appended at the end of the Information Element. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).
 
 # Code assignment for EIP Information Elements (a.k.a. EIP LTVs)
 
@@ -691,4 +752,3 @@ This document has no IANA actions.
 {:numbered="false"}
 
 Giulio Sidoretti has contributed to the section on Compact Path Tracing.
-
