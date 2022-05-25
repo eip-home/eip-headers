@@ -654,6 +654,7 @@ TODO
 
 ## Geotagging for Semantic Routing (GSR) LTV
 We describe an LTV used for enhanced semantic routing.
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -687,6 +688,7 @@ LONG error: ± 9.3 mm
 ~~~
 
 ### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
+
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -700,6 +702,7 @@ LONG error: ± 9.3 mm
    |                                                               |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
+
 A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
 
 HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
