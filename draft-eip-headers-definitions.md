@@ -652,14 +652,15 @@ The destination node can reconstruct the different HMAC fields at heach hop to c
 TODO
 ~~~
 
-## Geotagging for Semantic Routing (GSR) LTV
-We describe an LTV used for enhanced semantic routing.
+## Geotagging LTV
+
+We describe an LTV for Semantic Routing use case.
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |Geotagging for Semantic Routing|Type |   RES   |
+   |1 0|  Length   |        Geotagging             |Type |   RES   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                      Position (Variable)                      |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -687,13 +688,13 @@ LAT error: ± 18.6 mm
 LONG error: ± 9.3 mm
 ~~~
 
-### Geotagging for Semantic Routing (GSR) LTV Authenticated Mode
+### Geotagging LTV Authenticated Mode
 
 ~~~
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |Geotagging for Semantic Routing|Type |A|HML|RES|
+   |1 0|  Length   |           Geotagging          |Type |A|HML|RES|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    ~                      Position (variable)                      ~
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
