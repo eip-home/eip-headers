@@ -36,6 +36,10 @@ author:
     name: "Giulio Sidoretti"
     organization: Univ. of Rome Tor Vergata / CNIT
     email: "giulio.sidoretti@uniroma2.it"
+ -
+    name: "Carmine Scarpitta"
+    organization: Univ. of Rome Tor Vergata / CNIT
+    email: "carmine.scarpitta@uniroma2.it"
 
 ### for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
