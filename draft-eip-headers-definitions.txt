@@ -5,11 +5,11 @@
 SIG on EIP                                                    S. Salsano
 Internet-Draft                          Univ. of Rome Tor Vergata / CNIT
 Intended status: Informational                              H. ElBakoury
-Expires: 27 November 2022                                     Consultant
+Expires: 29 November 2022                                     Consultant
                                                             G. Sidoretti
                                                             C. Scarpitta
                                         Univ. of Rome Tor Vergata / CNIT
-                                                             26 May 2022
+                                                             28 May 2022
 
 
         Extensible In-band Processing (EIP) Headers Definitions
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 November 2022.
+   This Internet-Draft will expire on 29 November 2022.
 
 Copyright Notice
 
@@ -338,7 +338,7 @@ Table of Contents
       |                                                              //
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   EIP extended LTV code: HMAC (see Table 2 in Section 6.2)
+   EIP extended LTV code: HMAC (see Table 3 in Section 6.2)
 
    Data Len: the length of HMAC LTV in 4-bytes units, excluding the
    first row: the counting starts from the second row (HMAC Key ID).
@@ -374,7 +374,7 @@ Table of Contents
       |0 1| Data Len  | EIP-LTV code  |    Short  Identifier          |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   EIP-LTV code: Short Identifier (see Table 1 in Section 6.1)
+   EIP-LTV code: Short Identifier (see Table 2 in Section 6.1)
 
    Data Len: The length of the variable-length data in 4-bytes units is
    zero in this case.
@@ -392,7 +392,7 @@ Table of Contents
       |              EIP Long Identifier   (variable lenght)          |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   EIP extended LTV code: Long Identifier (see Table 2 in Section 6.2)
+   EIP extended LTV code: Long Identifier (see Table 3 in Section 6.2)
 
    Data Len: The length of the variable-length part of the data in
    4-bytes units.
@@ -446,7 +446,7 @@ Table of Contents
       |           Timestamps TLV content (variable lenght)            |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   EIP-LTV code: Timestamps (see Table 1 in Section 6.1)
+   EIP-LTV code: Timestamps (see Table 2 in Section 6.1)
 
    The "Timestamps TLV Parameters" is a 16 bits field, it is split into
    two 8 bits fields as follows:
@@ -573,7 +573,7 @@ Table of Contents
       |0 1|  Len = 0  | Proc. Accel.  | Processing Acceleration ID    |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   Proc.  Accel. : EIP Short code (see Table 1 in Section 6.1)
+   Proc.  Accel. : EIP Short code (see Table 2 in Section 6.1)
 
    The Processing Acceleration ID is an opaque identifier, its
    definition is domain-specific.
@@ -595,7 +595,7 @@ Table of Contents
       |                                                               |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   Compact PT: EIP extended code (see Table 2 in Section 6.2)
+   Compact PT: EIP extended code (see Table 3 in Section 6.2)
 
    Type: 3 bits, specifies the content of the CPT LTV including the
    format of the MCD element.
@@ -666,31 +666,75 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
        0                   1                   2                   3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |1 0|  Length   |        Geotagging             |Type |   RES   |
+      |1 0|  Length   |        Geotagging             |S|D|Form.| RES |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-      |                      Position (Variable)                      |
+      |                      Position(s) (Variable)                   |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-   Geotagging for Semantic Routing: EIP extended code (see Table 2 in
+   Geotagging for Semantic Routing: EIP extended code (see Table 3 in
    Section 6.2)
 
-   Type: 3 bits, specifies the content of the Position field and the
-   encoding used to represent the geographical location.
+   S: (for Source) the Position includes the Source Location
+
+   D: (for Destination) the Position includes the Destination Location
+
+   Format: 3 bits, specifies the encoding used to represent the
+   geographical location(s).
 
    RES: Reserved, set to 0.
 
-   Position: Contains the geographical location data.  Its length must
-   be a multiple of 4 octects.
+   Position(s): Contains the geographical location data.  Its length
+   must be a multiple of 4 octects.
 
-   Geohash Short (Type = 000)
-   30 bits + 2 bits padding
-   LAT error: ± 610 m
-   LONG error: ± 305 m
+     +========+======================================================+
+     | Format | Encoding                                             |
+     +========+======================================================+
+     | 0      | Quantized Long: Latitude 32 bits, Longitude 32 bits  |
+     +--------+------------------------------------------------------+
+     | 1      | Quantized Short: Latitude 16 bits, Longitude 16 bits |
+     +--------+------------------------------------------------------+
+     | 2      | Geohash Long 60 bits                                 |
+     +--------+------------------------------------------------------+
+     | 3      | Geohash Short 30 bits                                |
+     +--------+------------------------------------------------------+
 
-   Geohash Long (Type = 001)
+                                  Table 1
+
+   Quantized format as described in https://mmcloughlin.com/posts/
+   geohash-assembly
+
+   Latitude and longitude are quantized by mapping to the unit interval
+   [0, 1] and multiplying by 2^32 for Long (32 bits) format and by 2^16
+   for Short format.
+
+   lat_long = floor( 2^32 * (lat + 90) / 180 )
+   lon_long = floor( 2^32 * (lon + 180) / 360 )
+
+   lat_short = floor( 2^16 * (lat + 90) / 180 )
+   lon_short = floor( 2^16 * (lon + 180) / 360 )
+
+   Geohash format is an open source format specified in
+   https://en.wikipedia.org/wiki/Geohash
+
+   Quantized Long (Format = 0)
+   64 bits (32 lat + 32 lon)
+   LAT error: ± 2.3 mm
+   LONG max error: ± 4.6 mm
+
+   Quantized Short (Format = 1)
+   32 bits (16 lat + 16 lon)
+   LAT error: ± 153 mm
+   LONG max error: ± 305 mm
+
+   Geohash Long (Format = 2)
    60 bits + 4 bits padding
    LAT error: ± 18.6 mm
    LONG error: ± 9.3 mm
+
+   Geohash Short (Format = 3)
+   30 bits + 2 bits padding
+   LAT error: ± 610 m
+   LONG error: ± 305 m
 
 5.7.1.  Geotagging LTV Authenticated Mode
 
@@ -731,7 +775,7 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
                      | Timestamps             | TBA  |
                      +------------------------+------+
 
-                          Table 1: Short Codes (1
+                          Table 2: Short Codes (1
                             bytes) for EIP LTVs
 
 6.2.  LTV Extended Codes
@@ -746,7 +790,7 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
                   | Long Identifier            | 0x0003 |
                   +----------------------------+--------+
 
-                     Table 2: Extended Codes (2 bytes)
+                     Table 3: Extended Codes (2 bytes)
                                 for EIP LTVs
 
 7.  Conventions and Definitions
