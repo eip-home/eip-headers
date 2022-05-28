@@ -664,33 +664,74 @@ We describe an LTV for Semantic Routing use case.
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |        Geotagging             |Type |   RES   |
+   |1 0|  Length   |        Geotagging             |S|D|Form.| RES |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                      Position (Variable)                      |
+   |                      Position(s) (Variable)                   |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
 Geotagging for Semantic Routing: EIP extended code (see {{ltv-ext-codes}} in {{sec-ext-ltv-codes}})
 
-Type: 3 bits, specifies the content of the Position field and the encoding used to represent the geographical location.
+S: (for Source) the Position includes the Source Location
+
+D: (for Destination) the Position includes the Destination Location
+
+Format: 3 bits, specifies the encoding used to represent the geographical location(s).
 
 RES: Reserved, set to 0.
 
-Position: Contains the geographical location data. Its length must be a multiple of 4 octects.
+Position(s): Contains the geographical location data. Its length must be a multiple of 4 octects.
+
+
+| Format | Encoding |
+| 0  |  Quantized Long: Latitude 32 bits, Longitude 32 bits |
+| 1  |  Quantized Short: Latitude 16 bits, Longitude 16 bits |
+| 2  |  Geohash Long 60 bits |
+| 3  |  Geohash Short 30 bits |
+
+Quantized format as described in https://mmcloughlin.com/posts/geohash-assembly
+
+Latitude and longitude are quantized by mapping to the unit interval [0, 1] and multiplying by 2^32 for Long (32 bits) format and by 2^16 for Short format.
 
 ~~~
-Geohash Short (Type = 000)
+lat_long = floor( 2^32 * (lat + 90) / 180 )
+lon_long = floor( 2^32 * (lon + 180) / 360 )
+
+lat_short = floor( 2^16 * (lat + 90) / 180 )
+lon_short = floor( 2^16 * (lon + 180) / 360 )
+~~~
+
+Geohash format is an open source format specified in https://en.wikipedia.org/wiki/Geohash
+
+
+~~~
+Quantized Long (Format = 0)
+64 bits (32 lat + 32 lon)
+LAT error: ± 2.3 mm
+LONG max error: ± 4.6 mm
+~~~
+
+~~~
+Quantized Short (Format = 1)
+32 bits (16 lat + 16 lon)
+LAT error: ± 153 mm
+LONG max error: ± 305 mm
+~~~
+
+~~~
+Geohash Long (Format = 2)
+60 bits + 4 bits padding
+LAT error: ± 18.6 mm
+LONG error: ± 9.3 mm
+~~~
+
+~~~
+Geohash Short (Format = 3)
 30 bits + 2 bits padding
 LAT error: ± 610 m
 LONG error: ± 305 m
 ~~~
 
-~~~
-Geohash Long (Type = 001)
-60 bits + 4 bits padding
-LAT error: ± 18.6 mm
-LONG error: ± 9.3 mm
-~~~
 
 ### Geotagging LTV Authenticated Mode
 
