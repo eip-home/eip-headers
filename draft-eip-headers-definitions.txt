@@ -5,11 +5,11 @@
 SIG on EIP                                                    S. Salsano
 Internet-Draft                          Univ. of Rome Tor Vergata / CNIT
 Intended status: Informational                              H. ElBakoury
-Expires: 29 November 2022                                     Consultant
+Expires: 1 December 2022                                      Consultant
                                                             G. Sidoretti
                                                             C. Scarpitta
                                         Univ. of Rome Tor Vergata / CNIT
-                                                             28 May 2022
+                                                             30 May 2022
 
 
         Extensible In-band Processing (EIP) Headers Definitions
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 November 2022.
+   This Internet-Draft will expire on 1 December 2022.
 
 Copyright Notice
 
@@ -88,6 +88,7 @@ Table of Contents
        5.6.2.  Geotagged Compact Path Tracing
      5.7.  Geotagging LTV
        5.7.1.  Geotagging LTV Authenticated Mode
+     5.8.  Simple Two-Way Active Measurement Protocol (STAMP) LTV
    6.  Code assignment for EIP Information Elements (a.k.a.  EIP LTVs)
      6.1.  LTV Short Codes
      6.2.  LTV Extended Codes
@@ -761,6 +762,58 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
    Information Element.  The size of the HMAC is a multiple of 8 octects
    (maximum 32 octects).
 
+5.8.  Simple Two-Way Active Measurement Protocol (STAMP) LTV
+
+   This is a porting to EIP of the STAMP implementation from RFC8972
+   (https://www.rfc-editor.org/rfc/rfc8972.html).
+
+   The original implementation writes the STAMP data in the UDP payload,
+   if the data is carried by EIP instead, the delay measurement can be
+   performed in-band.  This is true when the delay introduced by the
+   reflector is not relevant for the purpose of the measurement.
+   Indeed, the reflected STAMP data will be returned to the sender when
+   another packet is available for piggy-backing the STAMP data.
+
+   When the entire rount-trip delay is relevant, at least the reflected
+   packet should be sent out-of-band.
+
+   Following is an example of a Session-Sender STAMP Information Element
+   in Unauthenticated Mode:
+
+       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |1 0|  Length   |             STAMP             |D|A|    RES    |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                        Sequence Number                        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                          Timestamp                            |
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |         Error Estimate        |             SSID              |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                                                               |
+      |                                                               |
+      |                         MBZ (28 octets)                       |
+      |                                                               |
+      |                                                               |
+      |                                                               |
+      |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      ~                            TLVs                               ~
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+   D: Direction, set to 0 if it carries Sender data, 1 for Reflector
+   data.
+
+   A: Authenticated, set to 1 for Authenticated Mode.
+
+   RES: Reserved, 6 bits set to 0.
+
+   The detailed description of the remaining fields and of the other
+   formats, for the Reflector and Authenticated mode, can be found in
+   RFC8972.
+
 6.  Code assignment for EIP Information Elements (a.k.a.  EIP LTVs)
 
 6.1.  LTV Short Codes
@@ -841,11 +894,11 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
 
    [ID-PATH-TRACING]
               Filsfils, C., Abdelsalam, A., Garvia, P. C., Yufit, M.,
-              Graf, T., Su, Y., and S. Matsushima, "Path Tracing in SRv6
-              networks", Work in Progress, Internet-Draft, draft-
-              filsfils-spring-path-tracing-00, 4 March 2022,
+              Graf, T., Su, Y., Matsushima, S., and M. Valentine, "Path
+              Tracing in SRv6 networks", Work in Progress, Internet-
+              Draft, draft-filsfils-spring-path-tracing-01, 30 May 2022,
               <https://datatracker.ietf.org/doc/html/draft-filsfils-
-              spring-path-tracing-00>.
+              spring-path-tracing-01>.
 
 Acknowledgments
 
