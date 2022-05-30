@@ -763,7 +763,25 @@ This is a porting to EIP of the STAMP implementation from [RFC8972](https://www.
 
 The original implementation writes the STAMP data in the UDP payload, if the data is carried by EIP instead, the delay measurement can be performed in-band. This is true when the delay introduced by the reflector is not relevant for the purpose of the measurement. Indeed, the reflected STAMP data will be returned to the sender when another packet is available for piggy-backing the STAMP data.
 
-When the entire rount-trip delay is relevant, at least the reflected packet should be sent out-of-band.
+When the entire rount-trip delay is relevant, at least the reflected packet should be sent out-of-band to achieve the smallest possible delay when the Reflector processes the packet.
+
+~~~
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |             STAMP             |D|A|    RES    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                   STAMP content (variable)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+~~~
+
+D: Direction, set to 0 if it carries Sender data, 1 for Reflector data.
+
+A: Authenticated, set to 1 for Authenticated Mode.
+
+RES: Reserved, 6 bits set to 0.
+
+The STAMP content is variable. It changes depending on the Direction and Authenticated values.
 
 Following is an example of a Session-Sender STAMP Information Element in Unauthenticated Mode:
 
@@ -791,12 +809,6 @@ Following is an example of a Session-Sender STAMP Information Element in Unauthe
    ~                            TLVs                               ~
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
-
-D: Direction, set to 0 if it carries Sender data, 1 for Reflector data.
-
-A: Authenticated, set to 1 for Authenticated Mode.
-
-RES: Reserved, 6 bits set to 0.
 
 The detailed description of the remaining fields and of the other formats, for the Reflector and Authenticated mode, can be found in RFC8972.
 
