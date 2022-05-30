@@ -1963,9 +1963,24 @@ Max length of the HMAC will be 32 octects.<a href="#section-5.7.1-3" class="pilc
         </h3>
 <p id="section-5.8-1">This is a porting to EIP of the STAMP implementation from <a href="https://www.rfc-editor.org/rfc/rfc8972.html">RFC8972</a>.<a href="#section-5.8-1" class="pilcrow">¶</a></p>
 <p id="section-5.8-2">The original implementation writes the STAMP data in the UDP payload, if the data is carried by EIP instead, the delay measurement can be performed in-band. This is true when the delay introduced by the reflector is not relevant for the purpose of the measurement. Indeed, the reflected STAMP data will be returned to the sender when another packet is available for piggy-backing the STAMP data.<a href="#section-5.8-2" class="pilcrow">¶</a></p>
-<p id="section-5.8-3">When the entire rount-trip delay is relevant, at least the reflected packet should be sent out-of-band.<a href="#section-5.8-3" class="pilcrow">¶</a></p>
-<p id="section-5.8-4">Following is an example of a Session-Sender STAMP Information Element in Unauthenticated Mode:<a href="#section-5.8-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.8-5">
+<p id="section-5.8-3">When the entire rount-trip delay is relevant, at least the reflected packet should be sent out-of-band to achieve the smallest possible delay when the Reflector processes the packet.<a href="#section-5.8-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8-4">
+<pre>
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1 0|  Length   |             STAMP             |D|A|    RES    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                   STAMP content (variable)                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</pre><a href="#section-5.8-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5.8-5">D: Direction, set to 0 if it carries Sender data, 1 for Reflector data.<a href="#section-5.8-5" class="pilcrow">¶</a></p>
+<p id="section-5.8-6">A: Authenticated, set to 1 for Authenticated Mode.<a href="#section-5.8-6" class="pilcrow">¶</a></p>
+<p id="section-5.8-7">RES: Reserved, 6 bits set to 0.<a href="#section-5.8-7" class="pilcrow">¶</a></p>
+<p id="section-5.8-8">The STAMP content is variable. It changes depending on the Direction and Authenticated values.<a href="#section-5.8-8" class="pilcrow">¶</a></p>
+<p id="section-5.8-9">Following is an example of a Session-Sender STAMP Information Element in Unauthenticated Mode:<a href="#section-5.8-9" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.8-10">
 <pre>
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -1989,12 +2004,9 @@ Max length of the HMAC will be 32 octects.<a href="#section-5.7.1-3" class="pilc
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    ~                            TLVs                               ~
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-</pre><a href="#section-5.8-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.8-10" class="pilcrow">¶</a>
 </div>
-<p id="section-5.8-6">D: Direction, set to 0 if it carries Sender data, 1 for Reflector data.<a href="#section-5.8-6" class="pilcrow">¶</a></p>
-<p id="section-5.8-7">A: Authenticated, set to 1 for Authenticated Mode.<a href="#section-5.8-7" class="pilcrow">¶</a></p>
-<p id="section-5.8-8">RES: Reserved, 6 bits set to 0.<a href="#section-5.8-8" class="pilcrow">¶</a></p>
-<p id="section-5.8-9">The detailed description of the remaining fields and of the other formats, for the Reflector and Authenticated mode, can be found in RFC8972.<a href="#section-5.8-9" class="pilcrow">¶</a></p>
+<p id="section-5.8-11">The detailed description of the remaining fields and of the other formats, for the Reflector and Authenticated mode, can be found in RFC8972.<a href="#section-5.8-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
