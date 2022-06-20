@@ -675,12 +675,10 @@ Position(s): Contains the geographical location data. Its length must be a multi
 | Format | Encoding |
 | 0  |  Quantized Long: Latitude 32 bits, Longitude 32 bits |
 | 1  |  Quantized Short: Latitude 16 bits, Longitude 16 bits |
-| 2  |  Geohash Long 60 bits |
-| 3  |  Geohash Short 30 bits |
+| 2  |  Geohash Long 60 bits (padded to 64 bits)|
+| 3  |  Geohash Short 30 bits (padded to 32 bits)|
 
-Quantized format as described in https://mmcloughlin.com/posts/geohash-assembly
-
-Latitude and longitude are quantized by mapping to the unit interval [0, 1] and multiplying by 2^32 for Long (32 bits) format and by 2^16 for Short format.
+Quantized format as described in https://mmcloughlin.com/posts/geohash-assembly. Latitude and longitude are quantized by mapping to the unit interval [0, 1] and multiplying by 2^32 for Long format (32+32=64 bits) and by 2^16 for Short format (16+16=32 bits), as illustrated in the following formulas:
 
 ~~~
 lat_long = floor( 2^32 * (lat + 90) / 180 )
@@ -691,7 +689,6 @@ lon_short = floor( 2^16 * (lon + 180) / 360 )
 ~~~
 
 Geohash format is an open source format specified in https://en.wikipedia.org/wiki/Geohash
-
 
 ~~~
 Quantized Long (Format = 0)
@@ -711,40 +708,16 @@ LONG max error: ± 305 m
 Geohash Long (Format = 2)
 60 bits + 4 bits padding
 LAT error: ± 18.6 mm
-LONG error: ± 9.3 mm
+LONG max error: ± 9.3 mm
 ~~~
 
 ~~~
 Geohash Short (Format = 3)
 30 bits + 2 bits padding
 LAT error: ± 610 m
-LONG error: ± 305 m
+LONG max error: ± 305 m
 ~~~
 
-
-### Geotagging LTV Authenticated Mode
-
-~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |           Geotagging          |Type |A|HML|RES|
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   ~                      Position (variable)                      ~
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                                                               |
-   ~                             HMAC                              ~
-   |                                                               |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-~~~
-
-A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.
-
-HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
-`MAC length = (HML + 1) * 8 bytes`.\
-Max length of the HMAC will be 32 octects.
-
-In the authenticated mode, an HMAC is appended at the end of the Information Element. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).
 
 ## Simple Two-Way Active Measurement Protocol (STAMP) LTV
 
