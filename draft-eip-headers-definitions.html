@@ -1205,11 +1205,6 @@ it is distributed to stimulate discussion.<a href="#section-abstract-2" class="p
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7">
                 <p id="section-toc.1-1.5.2.7.1"><a href="#section-5.7" class="xref">5.7</a>.  <a href="#name-geotagging-ltv" class="xref">Geotagging LTV</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.7.2.1">
-                    <p id="section-toc.1-1.5.2.7.2.1.1"><a href="#section-5.7.1" class="xref">5.7.1</a>.  <a href="#name-geotagging-ltv-authenticate" class="xref">Geotagging LTV Authenticated Mode</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.8">
                 <p id="section-toc.1-1.5.2.8.1"><a href="#section-5.8" class="xref">5.8</a>.  <a href="#name-simple-two-way-active-measu" class="xref">Simple Two-Way Active Measurement Protocol (STAMP) LTV</a></p>
@@ -1877,84 +1872,56 @@ TODO
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">2</td>
-              <td class="text-left" rowspan="1" colspan="1">Geohash Long 60 bits</td>
+              <td class="text-left" rowspan="1" colspan="1">Geohash Long 60 bits (padded to 64 bits)</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">3</td>
-              <td class="text-left" rowspan="1" colspan="1">Geohash Short 30 bits</td>
+              <td class="text-left" rowspan="1" colspan="1">Geohash Short 30 bits (padded to 32 bits)</td>
             </tr>
           </tbody>
         </table>
-<p id="section-5.7-10">Quantized format as described in https://mmcloughlin.com/posts/geohash-assembly<a href="#section-5.7-10" class="pilcrow">¶</a></p>
-<p id="section-5.7-11">Latitude and longitude are quantized by mapping to the unit interval [0, 1] and multiplying by 2^32 for Long (32 bits) format and by 2^16 for Short format.<a href="#section-5.7-11" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.7-12">
+<p id="section-5.7-10">Quantized format as described in https://mmcloughlin.com/posts/geohash-assembly. Latitude and longitude are quantized by mapping to the unit interval [0, 1] and multiplying by 2^32 for Long format (32+32=64 bits) and by 2^16 for Short format (16+16=32 bits), as illustrated in the following formulas:<a href="#section-5.7-10" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.7-11">
 <pre>
 lat_long = floor( 2^32 * (lat + 90) / 180 )
 lon_long = floor( 2^32 * (lon + 180) / 360 )
 
 lat_short = floor( 2^16 * (lat + 90) / 180 )
 lon_short = floor( 2^16 * (lon + 180) / 360 )
-</pre><a href="#section-5.7-12" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-11" class="pilcrow">¶</a>
 </div>
-<p id="section-5.7-13">Geohash format is an open source format specified in https://en.wikipedia.org/wiki/Geohash<a href="#section-5.7-13" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.7-14">
+<p id="section-5.7-12">Geohash format is an open source format specified in https://en.wikipedia.org/wiki/Geohash<a href="#section-5.7-12" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.7-13">
 <pre>
 Quantized Long (Format = 0)
 64 bits (32 lat + 32 lon)
 LAT error: ± 2.3 mm
 LONG max error: ± 4.6 mm
-</pre><a href="#section-5.7-14" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-13" class="pilcrow">¶</a>
 </div>
-<div class="alignLeft art-text artwork" id="section-5.7-15">
+<div class="alignLeft art-text artwork" id="section-5.7-14">
 <pre>
 Quantized Short (Format = 1)
 32 bits (16 lat + 16 lon)
 LAT error: ± 153 m
 LONG max error: ± 305 m
-</pre><a href="#section-5.7-15" class="pilcrow">¶</a>
+</pre><a href="#section-5.7-14" class="pilcrow">¶</a>
 </div>
-<div class="alignLeft art-text artwork" id="section-5.7-16">
+<div class="alignLeft art-text artwork" id="section-5.7-15">
 <pre>
 Geohash Long (Format = 2)
 60 bits + 4 bits padding
 LAT error: ± 18.6 mm
-LONG error: ± 9.3 mm
-</pre><a href="#section-5.7-16" class="pilcrow">¶</a>
+LONG max error: ± 9.3 mm
+</pre><a href="#section-5.7-15" class="pilcrow">¶</a>
 </div>
-<div class="alignLeft art-text artwork" id="section-5.7-17">
+<div class="alignLeft art-text artwork" id="section-5.7-16">
 <pre>
 Geohash Short (Format = 3)
 30 bits + 2 bits padding
 LAT error: ± 610 m
-LONG error: ± 305 m
-</pre><a href="#section-5.7-17" class="pilcrow">¶</a>
-</div>
-<div id="geotagging-ltv-authenticated-mode">
-<section id="section-5.7.1">
-          <h4 id="name-geotagging-ltv-authenticate">
-<a href="#section-5.7.1" class="section-number selfRef">5.7.1. </a><a href="#name-geotagging-ltv-authenticate" class="section-name selfRef">Geotagging LTV Authenticated Mode</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="section-5.7.1-1">
-<pre>
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |1 0|  Length   |           Geotagging          |Type |A|HML|RES|
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   ~                      Position (variable)                      ~
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                                                               |
-   ~                             HMAC                              ~
-   |                                                               |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-</pre><a href="#section-5.7.1-1" class="pilcrow">¶</a>
-</div>
-<p id="section-5.7.1-2">A: Authenticated, set to 1 in Authenticated Mode, 0 otherwise.<a href="#section-5.7.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.7.1-3">HML: HMAC Length, set to 00 in unauthenticated mode. In authenticated mode, it stores the length of the HMAC field in 8 octects.\
-<code>MAC length = (HML + 1) * 8 bytes</code>.\
-Max length of the HMAC will be 32 octects.<a href="#section-5.7.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.7.1-4">In the authenticated mode, an HMAC is appended at the end of the Information Element. The size of the HMAC is a multiple of 8 octects (maximum 32 octects).<a href="#section-5.7.1-4" class="pilcrow">¶</a></p>
-</section>
+LONG max error: ± 305 m
+</pre><a href="#section-5.7-16" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
