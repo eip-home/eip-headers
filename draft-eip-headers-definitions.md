@@ -150,17 +150,6 @@ Option type
 
    0x3E (001 11110) RFC3692-style Experiment
 
-   NB the current IANA allocation for Option Types starting with 001 is
-   (see https://www.iana.org/assignments/ipv6-parameters/ipv6-parameters.xhtml)
-
-~~~
-   32 possible Option Types starting with 001
-   2 allocated by RFCs
-   2 temporary allocated by Internet Drafts
-   1 allocated for RFC3692-style Experiment
-   27 not allocated
-~~~
-
    Opt Data Len is the lenght in bytes of the rest of the EIP Option
 
    Within the EIP Option, we have a LTV structure:
@@ -714,8 +703,8 @@ LONG max error: ± 4.6 mm
 ~~~
 Quantized Short (Format = 1)
 32 bits (16 lat + 16 lon)
-LAT error: ± 153 mm
-LONG max error: ± 305 mm
+LAT error: ± 153 m
+LONG max error: ± 305 m
 ~~~
 
 ~~~
@@ -832,6 +821,7 @@ The detailed description of the remaining fields and of the other formats, for t
 | HMAC  | 0x0001 |
 | Compact Path Tracing (CPT) | 0x0002 |
 | Long Identifier | 0x0003 |
+| Geotagging | 0x0004 |
 {: #ltv-ext-codes title="Extended Codes (2 bytes) for EIP LTVs"}
 
 
