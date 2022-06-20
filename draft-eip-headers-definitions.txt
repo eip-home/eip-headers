@@ -5,11 +5,11 @@
 SIG on EIP                                                    S. Salsano
 Internet-Draft                          Univ. of Rome Tor Vergata / CNIT
 Intended status: Informational                              H. ElBakoury
-Expires: 1 December 2022                                      Consultant
+Expires: 22 December 2022                                     Consultant
                                                             G. Sidoretti
                                                             C. Scarpitta
                                         Univ. of Rome Tor Vergata / CNIT
-                                                             30 May 2022
+                                                            20 June 2022
 
 
         Extensible In-band Processing (EIP) Headers Definitions
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 December 2022.
+   This Internet-Draft will expire on 22 December 2022.
 
 Copyright Notice
 
@@ -157,16 +157,6 @@ Table of Contents
    being we use 11110, so overall the Option Type for EIP is
 
    0x3E (001 11110) RFC3692-style Experiment
-
-   NB the current IANA allocation for Option Types starting with 001 is
-   (see https://www.iana.org/assignments/ipv6-parameters/
-   ipv6-parameters.xhtml)
-
-      32 possible Option Types starting with 001
-      2 allocated by RFCs
-      2 temporary allocated by Internet Drafts
-      1 allocated for RFC3692-style Experiment
-      27 not allocated
 
    Opt Data Len is the lenght in bytes of the rest of the EIP Option
 
@@ -724,8 +714,8 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
 
    Quantized Short (Format = 1)
    32 bits (16 lat + 16 lon)
-   LAT error: ± 153 mm
-   LONG max error: ± 305 mm
+   LAT error: ± 153 m
+   LONG max error: ± 305 m
 
    Geohash Long (Format = 2)
    60 bits + 4 bits padding
@@ -853,6 +843,8 @@ Timestamp (10 bit) | Interface ID (16 bit) | Load (4 bit) | Timeshift (2 bit)
                   | Compact Path Tracing (CPT) | 0x0002 |
                   +----------------------------+--------+
                   | Long Identifier            | 0x0003 |
+                  +----------------------------+--------+
+                  | Geotagging                 | 0x0004 |
                   +----------------------------+--------+
 
                      Table 3: Extended Codes (2 bytes)
