@@ -29,17 +29,10 @@ author:
     organization: Univ. of Rome Tor Vergata / CNIT
     email: "stefano.salsano@uniroma2.it"
  -
-    name: "Hesham ElBakoury"
-    organization: Consultant
-    email: "helbakoury@gmail.com"
- -
-    name: "Giulio Sidoretti"
-    organization: Univ. of Rome Tor Vergata / CNIT
-    email: "giulio.sidoretti@uniroma2.it"
- -
-    name: "Carmine Scarpitta"
-    organization: Univ. of Rome Tor Vergata / CNIT
-    email: "carmine.scarpitta@uniroma2.it"
+    name: "Andrea Mayer"
+    ins: "A. Mayer"
+    organization: Univ. of Rome Tor Vergata / CNIT / Common Net
+    email: "andrea.mayer@uniroma2.it"
 
 ### for help with the syntax, see https://github.com/cabo/kramdown-rfc
 
@@ -48,6 +41,8 @@ normative:
 
 informative:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
+  I-D.draft-eip-arch:
+  I-D.draft-mayer-ioam-gob:
   id-eip-use-cases:
     title: "Extensible In-band Processing (EIP) Use Cases"
     author:
@@ -89,7 +84,15 @@ informative:
 
 --- abstract
 
-This document discusses the EIP header format.
+This document discusses the format of EIP protocol elements and the
+transport of EIP in different IPv6-based protocol headers.
+
+In particular, this document defines the standalone EIP formats for the
+IPv6 Hop-by-Hop Options Header and for the Segment Routing Header, and
+it defines the generic format of EIP Information Elements. Other
+approaches to transport EIP, including integration with the IOAM
+framework through the Global Opaque Block (GOB), are described in
+separate documents.
 
 Caveat: this document is still in brainstorming stage,
 it is distributed to stimulate discussion.
@@ -98,23 +101,32 @@ it is distributed to stimulate discussion.
 
 # Introduction
 
-The EIP header is used to carry information that IPv6 nodes (hosts and routers) can read and write to support different use cases. The use cases for EIP are discussed in [id-eip-use-cases].
-EIP provides a common architecture and framework which can be extended/tailored for the different use cases. The EIP architecture is discussed in [id-eip-arch].
+The EIP header is used to carry information that IPv6 nodes (hosts and routers) can read and write to support different use cases. The use cases for EIP are discussed in {{id-eip-use-cases}}.
+EIP provides a common architecture and framework which can be extended/tailored for the different use cases. The EIP architecture is discussed in {{I-D.draft-eip-arch}}.
+
+The present document focuses on the standalone EIP formats and on the
+generic definition of EIP Information Elements, while other documents
+describe additional approaches to transport EIP.
 
 The design of the EIP header takes into account the requirement to be
 efficient and "hardware friendly" (i.e. the effort and cost to implement EIP
 in hardware achieving line rate forwarding needs to be reasonable).
 
 The benefits of having EIP as a common header and framework to support
-multiple use cases are discussed in [id-eip-arch].
+multiple use cases are discussed in {{I-D.draft-eip-arch}}.
 
-The EIP header could be carried in different ways inside the IPv6 Header:
-1) EIP Option for Hop-by-Hop Extension Header; 2) EIP TLV for Segment Routing Header
+EIP can be transported in different ways within IPv6. This document
+defines two standalone approaches: 1) an EIP Option for the Hop-by-Hop
+Options Header; and 2) an EIP TLV for the Segment Routing Header.
 
-It has to be decided if only one of the two mechanisms will be selected or if it will be deemed useful to specify and support both mechanisms.
+Additional approaches to transport EIP are also possible. In
+particular, EIP Information Elements can be carried within the IOAM
+framework through the Global Opaque Block (GOB) of the IOAM
+Pre-allocated Trace Option, as described in
+{{I-D.draft-mayer-ioam-gob}}.
 
 
-# Definition of EIP Option for HBH EH
+# Standalone EIP Transport in the Hop-by-Hop Options Header
 
 The EIP header can be carried as an Option in the Hop by Hop Extension Header, as shown in the following figure.
 
@@ -158,7 +170,7 @@ Option type
       LTV Len is the lenght in bytes of the rest of the LTV
 
 
-# Definition of EIP TLV for SRH
+# Standalone EIP Transport in the Segment Routing Header
 
 The EIP header can be carried as a TLV in the Segment Routing Header. A generic TLV in the SRH is defined as follows.
 
@@ -215,12 +227,36 @@ The EIP TLV for SRH will carry a set of EIP Information Elements as shown hereaf
 ~~~
 
 
-# Generic format for EIP Information Elements
+# Other Approaches to Transport EIP
+
+The standalone formats defined in this document are not the only
+possible ways to transport EIP Information Elements.
+
+As discussed in {{I-D.draft-eip-arch}}, EIP is an architectural
+framework for structured in-band metadata and processing, and it can be
+mapped onto different IPv6-based protocol containers.
+
+In addition to the standalone EIP Option for the Hop-by-Hop Options
+Header and the standalone EIP TLV for the Segment Routing Header,
+another important approach is to carry EIP Information Elements within
+the IOAM framework through the Global Opaque Block (GOB) of the IOAM
+Pre-allocated Trace Option, as described in {{I-D.draft-mayer-ioam-gob}}.
+
+For this reason, this document should be read as defining the generic
+EIP Information Elements and two standalone transport formats, rather
+than as restricting EIP to a single protocol representation.
+
+
+# Generic Format of EIP Information Elements
 
 EIP Information Elements are used to carry the information needed by the different use cases.
 The same Information Element can be reused across multiple use cases.
+The same EIP Information Elements can also be used across different
+approaches to transport EIP, including the standalone formats defined
+in this document and other mappings such as the IOAM/GOB-based
+approach.
 
-An fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have different sizes. In particular, we select a solution in which the Codes can have three different lengths (respectively one byte, two bytes or three bytes).
+A fundamental requirement for EIP is to be "Extensible", therefore we need to have a potentially large number of different Information Elements. On the other hand, we may need to be efficient, limiting the overhead in bytes for carrying a given information. In order to have the possibility to find the optimal trade-off between these contrasting requirements, the Codes or "Tags" for the Information Elements can have different sizes. In particular, we select a solution in which the Codes can have three different lengths (respectively one byte, two bytes or three bytes).
 
 In order to support the variability in the size of the Code of the Information Element, we use an LTV (Length-Tag-Value) approach instead of TLVs (Tag-Length-Value).
 
@@ -806,17 +842,30 @@ The detailed description of the remaining fields and of the other formats, for t
 
 # Security Considerations
 
-TODO Security
+EIP introduces in-band information that may be inspected, inserted, or
+updated by nodes along the packet path. Unauthorized access to, or
+modification of, EIP information can affect telemetry, service
+behavior, or policy enforcement. EIP is primarily intended for
+deployment in controlled or limited domains. The specific security
+implications may depend on the protocol container used to transport
+EIP and on the semantics of the EIP Information Elements.
 
 
 # IANA Considerations
 
-This document has no IANA actions.
+This version of the document does not request IANA actions. Future
+versions may request IANA actions related to standalone EIP transport
+codepoints or to EIP Information Element code assignments. Other
+approaches to transport EIP, such as IOAM/GOB-based transport, are
+handled by their corresponding specifications.
 
 
 --- back
 
-# Acknowledgments
+# Acknowledgments and Contributors
 {:numbered="false"}
 
-Giulio Sidoretti has contributed to the section on Compact Path Tracing.
+Giulio Sidoretti contributed to the Compact Path Tracing section and to
+a prototype eBPF-based implementation of EIP. Carmine Scarpitta
+contributed to an early prototype implementation of EIP encoding in
+Linux. Hesham ElBakoury contributed to the design of the EIP framework.
