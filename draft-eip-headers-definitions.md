@@ -40,6 +40,7 @@ normative:
   RFC8754:
 
 informative:
+  RFC9197:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
   I-D.draft-eip-arch:
   I-D.draft-mayer-ioam-gob:
@@ -325,6 +326,40 @@ and 2^24 codes of 3 bytes. The codes of one byte will be referred to as "Short c
 ## Decision on the approach for EIP LTVs
 
 The selected approach is the #2, because it is more flexible and it supports a much higher number of Information Elements Codes.
+
+{: #sec-code-partitioning}
+## Partitioning of the EIP LTV Code Spaces
+
+Each of the three EIP LTV Code spaces (Short, Extended and
+Double-extended codes) is partitioned into an operator-defined subrange
+and an IANA-assigned subrange, based on the most significant bit (MSB)
+of the Code:
+
+* Codes with MSB = 0 are operator-defined: their semantics is
+  established by configuration within a deployment domain, and they are
+  not subject to registration.
+* Codes with MSB = 1 are IANA-assigned: their semantics is globally
+  defined by the specification that registers them.
+
+The resulting subranges are:
+
+| Code space | Operator-defined | IANA-assigned |
+| Short codes (1 byte) | 0x00 - 0x7F | 0x80 - 0xFF |
+| Extended codes (2 bytes) | 0x0000 - 0x7FFF | 0x8000 - 0xFFFF |
+| Double-extended codes (3 bytes) | 0x000000 - 0x7FFFFF | 0x800000 - 0xFFFFFF |
+{: #tab-code-ranges title="Operator-defined and IANA-assigned subranges of the EIP LTV Code spaces"}
+
+This partitioning follows the model used by {{RFC9197}} for the IOAM
+Namespace-ID and by {{I-D.draft-mayer-ioam-gob}} for the GOB Schema
+identifiers, resulting in a consistent rule across the EIP/IOAM
+framework: values with the MSB set are globally defined, values with
+the MSB clear are managed by the operator within a deployment domain.
+
+Operator-defined codes allow the immediate deployment of
+domain-specific Information Elements within a limited domain, without
+any registration step. Interoperable Information Elements are expected
+to be defined in specifications and to be assigned codes from the
+IANA-assigned subranges.
 
 
 # Definition of EIP Information Elements (a.k.a. EIP LTVs)
@@ -813,12 +848,18 @@ The detailed description of the remaining fields and of the other formats, for t
 
 # Code assignment for EIP Information Elements (a.k.a. EIP LTVs)
 
+The Information Elements defined in this document are intended to be
+interoperable and are therefore numbered from the IANA-assigned
+subranges defined in {{sec-code-partitioning}} (MSB set to 1). The
+values below are provisional until the corresponding IANA registries
+are created.
+
 {: #sec-ltv-codes}
 ## LTV Short Codes
 
 | Information Element | Code |
-| Short Identifier  |  0x01 |
-| Processing Accelerator  |  0x02 |
+| Short Identifier  |  0x81 |
+| Processing Accelerator  |  0x82 |
 | Timestamps | TBA |
 {: #ltv-codes  title="Short Codes (1 bytes) for EIP LTVs"}
 
@@ -827,10 +868,10 @@ The detailed description of the remaining fields and of the other formats, for t
 ## LTV Extended Codes
 
 | Information Element | Code |
-| HMAC  | 0x0001 |
-| Compact Path Tracing (CPT) | 0x0002 |
-| Long Identifier | 0x0003 |
-| Geotagging | 0x0004 |
+| HMAC  | 0x8001 |
+| Compact Path Tracing (CPT) | 0x8002 |
+| Long Identifier | 0x8003 |
+| Geotagging | 0x8004 |
 {: #ltv-ext-codes title="Extended Codes (2 bytes) for EIP LTVs"}
 
 
@@ -858,6 +899,12 @@ versions may request IANA actions related to standalone EIP transport
 codepoints or to EIP Information Element code assignments. Other
 approaches to transport EIP, such as IOAM/GOB-based transport, are
 handled by their corresponding specifications.
+
+In particular, future versions of this document are expected to request
+the creation of three "EIP Information Element Codes" registries (for
+Short, Extended and Double-extended codes), covering the IANA-assigned
+subranges defined in {{sec-code-partitioning}}. The operator-defined
+subranges are not subject to IANA registration.
 
 
 --- back
