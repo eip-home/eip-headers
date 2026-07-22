@@ -41,6 +41,7 @@ normative:
 
 informative:
   RFC9197:
+  RFC8799:
   ID-PATH-TRACING: I-D.filsfils-spring-path-tracing
   I-D.draft-eip-arch:
   I-D.draft-mayer-ioam-gob:
@@ -360,6 +361,17 @@ domain-specific Information Elements within a limited domain, without
 any registration step. Interoperable Information Elements are expected
 to be defined in specifications and to be assigned codes from the
 IANA-assigned subranges.
+
+Operator-defined codes are meaningful only within the controlled
+domain, or set of cooperating domains, that configured them.
+Deployments using operator-defined codes MUST ensure, following the
+controlled domain model of {{RFC8799}} (e.g., through filtering at
+domain boundaries or edge-to-edge encapsulation), that EIP options
+carrying such codes do not leave the domain, and that EIP options
+entering the domain from outside are not interpreted using the local
+code configuration. A node that receives an Information Element whose
+Code it does not support, or has no configuration for, MUST skip it,
+using the Data Len field, without interpreting its content.
 
 
 # Definition of EIP Information Elements (a.k.a. EIP LTVs)
@@ -890,6 +902,13 @@ behavior, or policy enforcement. EIP is primarily intended for
 deployment in controlled or limited domains. The specific security
 implications may depend on the protocol container used to transport
 EIP and on the semantics of the EIP Information Elements.
+
+The use of operator-defined Information Element codes relies on the
+confinement guarantees of the controlled domain
+({{sec-code-partitioning}}): a failure to filter EIP options at domain
+boundaries can expose domain-local information to external observers,
+or cause Information Elements from a foreign domain to be
+misinterpreted under the local code configuration.
 
 
 # IANA Considerations
